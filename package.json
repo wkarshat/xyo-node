@@ -1,0 +1,22 @@
+{
+  "name": "archiver",
+  "version": "1.0.0",
+  "description": "XYO Archiver",
+  "main": "server.js",
+  "scripts": {
+    "lint": "eslint src/js"
+  },
+  "author": "Arie Trouw",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.23.5",
+    "express": "^4.16.2",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1",
+    "is-my-json-valid": "^2.17.1",
+    "string-format": "^0.5.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0"
+  }
+}
