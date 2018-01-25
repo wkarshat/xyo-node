@@ -1,7 +1,7 @@
 {
-  "name": "archiver",
+  "name": "xyo-node",
   "version": "1.0.0",
-  "description": "XYO Archiver",
+  "description": "XY Oracle Server",
   "main": "server.js",
   "scripts": {
     "lint": "eslint src/js"
@@ -10,10 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "browser-sync": "^2.23.5",
+    "config": "^1.29.2",
     "express": "^4.16.2",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1",
     "is-my-json-valid": "^2.17.1",
+    "node-debugger": "^1.0.0",
     "string-format": "^0.5.0"
   },
   "devDependencies": {
