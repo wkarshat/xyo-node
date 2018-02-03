@@ -1,30 +1,135 @@
 {
-  "archivists": [
-    {
-        "port": 3456
+  "sentinels": [{
+      "moniker": "sdxyhq",
+      "port": 1456,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.717244",
+          "longitude": "-117.169299",
+          "altitude": "17"
+        }
+      }
     },
     {
-        "port": 3457
+      "moniker": "sdzoo",
+      "port": 1457,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.7164038",
+          "longitude": "-117.1709121",
+          "altitude": "14.53"
+        }
+      }
     },
     {
-        "port": 3458
+      "moniker": "sdairport",
+      "port": 1458,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.7285668",
+          "longitude": "-117.1970625",
+          "altitude": "14.96"
+        }
+      }
     },
     {
-        "port": 3459
+      "moniker": "sdseaworld",
+      "port": 1459,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.7291013",
+          "longitude": "-117.2697104",
+          "altitude": "12.89"
+        }
+      }
     }
   ],
-  "diviners": [
-    {
-        "port": 4456
+  "bridges": [{
+      "moniker": "sdxyhq",
+      "port": 2456,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.717244",
+          "longitude": "-117.169299",
+          "altitude": "17"
+        }
+      }
     },
     {
-        "port": 4457
+      "moniker": "sdhoteldel",
+      "port": 2457,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.6809275",
+          "longitude": "-117.180642",
+          "altitude": "17"
+        }
+      }
     },
     {
-        "port": 4458
+      "moniker": "sdmthope",
+      "port": 2458,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.6988419",
+          "longitude": "-117.1354522",
+          "altitude": "15"
+        }
+      }
     },
     {
-        "port": 4459
+      "moniker": "sdwestfieldmv",
+      "port": 2459,
+      "config": {
+        "range": "10000000",
+        "location": {
+          "latitude": "32.7576968",
+          "longitude": "-117.1490956",
+          "altitude": "15"
+        }
+      }
     }
-  ]
+  ],
+  "archivists": [{
+      "port": 3456,
+      "url": "localhost"
+    },
+    {
+      "port": 3457,
+      "url": "localhost"
+    },
+    {
+      "port": 3458,
+      "url": "localhost"
+    },
+    {
+      "port": 3459,
+      "url": "1.archivist.xyo.network"
+    }
+  ],
+  "diviners": [{
+      "port": 4456,
+      "url": "1.diviner.xyo.network"
+    },
+    {
+      "port": 4457,
+      "url": "localhost"
+    },
+    {
+      "port": 4458,
+      "url": "localhost"
+    },
+    {
+      "port": 4459,
+      "url": "localhost"
+    }
+  ],
+  "clock": 1000
 }

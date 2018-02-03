@@ -1,104 +1,65 @@
 "use strict";
-let express = require("express"),
-  app = express(),
-  bodyParser = require("body-parser"),
-  XYO = require("./xyo.js"),
-  format = require("string-format"),
-  config = require("config");
+let XYO = require("./xyo.js"),
+  TIMERS = require("timers"),
+  CONFIG = require("config");
 
 /* ================= */
 /*  Local Functions  */
 /* ================= */
 
 const initialize = () => {
-    if (config.archivists && config.archivists.length > 0) {
-      config.archivists.forEach((archivist) => {
-        XYO.ObjectMap[archivist.port] = XYO.ObjectMap[archivist.port] || new XYO.Archivist(archivist.port);
-        app.listen(archivist.port);
-      });
-    }
-    if (config.diviner && config.diviner.length > 0) {
-      config.diviner.forEach((diviner) => {
-        XYO.ObjectMap[diviner.port] = XYO.ObjectMap[diviner.port] || new XYO.Archivist(diviner.port);
-        app.listen(diviner.port);
-      });
-    }
-  },
-
-  addEntriesToDatabase = (moniker, entries) => {
-    let archivist = XYO.getObject(moniker);
-
-    entries.forEach((entry) => {
-      let pk1Entries = archivist.entriesById[entry.pk1] || [],
-        pk2Entries = archivist.entriesById[entry.pk2] || [];
-
-      archivist.entriesById[entry.pk1] = pk1Entries;
-      archivist.entriesById[entry.pk2] = pk2Entries;
-
-      archivist.entries.push(entry);
-      pk1Entries.push(entry);
-      pk2Entries.push(entry);
+  if (CONFIG.sentinels && CONFIG.sentinels.length > 0) {
+    CONFIG.sentinels.forEach((sentinel) => {
+      XYO.fromPort[sentinel.port] = XYO.fromPort[sentinel.port] || new XYO.Sentinel(String(sentinel.port), sentinel.port, sentinel.config || {});
     });
-  },
+  }
 
-  returnJSONStatus = (req, res) => {
-    let object = XYO.getObject(req.port);
+  if (CONFIG.bridges && CONFIG.bridges.length > 0) {
+    CONFIG.bridges.forEach((bridge) => {
+      XYO.fromPort[bridge.port] = XYO.fromPort[bridge.port] || new XYO.Bridge(String(bridge.port), bridge.port, bridge.config || {});
+    });
+  }
 
-    res.status(200).send(JSON.stringify(object.status()));
-  };
+  if (CONFIG.archivists && CONFIG.archivists.length > 0) {
+    CONFIG.archivists.forEach((archivist) => {
+      XYO.fromPort[archivist.port] = XYO.fromPort[archivist.port] || new XYO.Archivist(String(archivist.port), archivist.port, archivist.config || {});
+    });
+  }
+
+  if (CONFIG.diviners && CONFIG.diviners.length > 0) {
+    CONFIG.diviners.forEach((diviner) => {
+      XYO.fromPort[diviner.port] = XYO.fromPort[diviner.port] || new XYO.Diviner(String(diviner.port), diviner.port, diviner.config || {});
+    });
+  }
+
+  TIMERS.setInterval(() => {
+    let key;
+    
+    XYO.Base.updateCount++;
+
+    for (key in XYO.fromMoniker) {
+      if (XYO.fromMoniker.hasOwnProperty(key)) {
+        XYO.fromMoniker[key].update();
+      }
+    }
+
+  }, CONFIG.clock);
+
+};
 
 /* ============= */
 /*  Application  */
 /* ============= */
 
-app.use(bodyParser.json()); // for parsing application/json
+/* app.get("/blocks", (req, res) => res.send(JSON.stringify(BLOCKCHAIN.blockchain)));
 
-app.get("/test", (req, res) => {
-  res.status(200).send("testing...");
-});
+app.post("/mineBlock", (req, res) => {
+  let newBlock = BLOCKCHAIN.generateNextBlock(req.body.data);
 
-app.get("*", (req, res) => {
-  let archivist = XYO.getObject(req.port),
-    contentType = req.headers["content-type"],
-    parts = req.path.split("/"),
-    id = null;
-
-  if (parts.length > 1) {
-    id = parts[1];
-  }
-  if (id.length === 0) {
-    if (!contentType || contentType.indexOf("application/json") !== 0) {
-      returnJSONStatus(req, res);
-    }
-  } else if (id != null) {
-    let entries = archivist().entriesById[id];
-
-    if (entries) {
-      res.send({
-        "id": id,
-        "entries": archivist().entriesById[id]
-      });
-    } else {
-      res.status(404).send(format("(${}) Not Found", id));
-    }
-  } else {
-    res.status(404).send(req.path);
-  }
-});
-
-app.post("/", (req, res) => {
-  let action = req.body.action;
-
-  switch (action) {
-    case "add":
-      addEntriesToDatabase(req.body.entries);
-      res.status(201);
-      res.send("OK");
-      break;
-    default:
-      res.send("default");
-      break;
-  }
-});
+  BLOCKCHAIN.addBlock(newBlock);
+  // broadcast(responseLatestMsg());
+  // console.log('block added: ' + JSON.stringify(newBlock));
+  res.send();
+}); */
 
 initialize();
