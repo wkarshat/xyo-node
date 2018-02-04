@@ -5,6 +5,7 @@ let Node = require("./Node.js");
 class Bridge extends Node {
 
   constructor(moniker, port, config) {
+    console.log("Bridge - constructor");
     super(moniker, port, config);
     this.entries = [];
   }

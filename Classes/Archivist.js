@@ -6,6 +6,7 @@ let Node = require("./Node.js"),
 class Archivist extends Node {
 
   constructor(moniker, port, config) {
+    console.log("Archivist - constructor");
     let self;
 
     super(moniker, port, config);
@@ -18,9 +19,18 @@ class Archivist extends Node {
     this.app.post("/", (req, res) => {
       self.post(req, res);
     });
+
+    this.io.on("connection", (socket) => {
+      console.log(format("New Connection"));
+      socket.on("peers", (data) => {
+        console.log(format("on peers:{}", data));
+      });
+      socket.emit("peers", format("peers [{}, {}]", moniker, port));
+    });
   }
 
   get(req, res) {
+    console.log("Archivist - get");
     let contentType = req.headers["content-type"],
       parts = req.path.split("/"),
       id = null;
@@ -55,6 +65,7 @@ class Archivist extends Node {
   }
 
   post(req, res) {
+    console.log("Archivist - post");
     let action = req.body.action;
 
     switch (action) {
@@ -101,6 +112,7 @@ class Archivist extends Node {
   }
 
   find(keys, max, epoch, entries) {
+    console.log("Archivist - find");
     let entryList = entries || {};
 
     keys.forEach((key) => {
@@ -120,6 +132,7 @@ class Archivist extends Node {
   }
 
   addEntriesToDatabase(entries) {
+    console.log("Archivist - addEntriesToDatabase");
     entries.forEach((entry) => {
       let pk1Entries = this.entriesByKey[entry.pk1] || [],
         pk2Entries = this.entriesByKey[entry.pk2] || [];
@@ -134,6 +147,7 @@ class Archivist extends Node {
   }
 
   addPayloadsToDatabase(payloads) {
+    console.log("Archivist - addPayloadsToDatabase");
     let entries = [];
 
     payloads.forEach((payload) => {
@@ -149,9 +163,10 @@ class Archivist extends Node {
     };
   }
 
-  findPeers() {
-    this.config.archivists.forEach((diviner) => {
-      this.addPeer(diviner);
+  findPeers(archivists) {
+    console.log("Archivist - findPeers: " + JSON.stringify(this.config));
+    archivists.forEach((archivist) => {
+      this.addPeer(archivist.domain, archivist.port);
     });
   }
 

@@ -1,0 +1,159 @@
+{
+  sentinels: [{
+      moniker: "sdxyhq", //San Diego XY HeadQuarters
+      port: 1456,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.717244",
+          longitude: "-117.169299",
+          altitude: "17"
+        }
+      }
+    },
+    {
+      moniker: "sdzoo", //San Diego Zoo
+      port: 1457,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7164038",
+          longitude: "-117.1709121",
+          altitude: "14.53"
+        }
+      }
+    },
+    {
+      moniker: "sdairport", //San Diego Airport
+      port: 1458,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7285668",
+          longitude: "-117.1970625",
+          altitude: "14.96"
+        }
+      }
+    },
+    {
+      moniker: "sdseaworld", //San Diego Sea World
+      port: 1459,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7291013",
+          longitude: "-117.2697104",
+          altitude: "12.89"
+        }
+      }
+    }
+  ],
+  bridges: [{
+      moniker: "sdxyhq", //San Diego XY HeadQuarters
+      port: 2456,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.717244",
+          longitude: "-117.169299",
+          altitude: "17"
+        }
+      }
+    },
+    {
+      moniker: "sdhoteldel", //San Diego Hotel Del Corinado
+      port: 2457,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.6809275",
+          longitude: "-117.180642",
+          altitude: "17"
+        }
+      }
+    },
+    {
+      moniker: "sdmthope", //San Diego Mt. Hope
+      port: 2458,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.6988419",
+          longitude: "-117.1354522",
+          altitude: "15"
+        }
+      }
+    },
+    {
+      moniker: "sdwestfieldmv", //San Diego Westfield Mall Mission Valley
+      port: 2459,
+      domain: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7576968",
+          longitude: "-117.1490956",
+          altitude: "15"
+        }
+      }
+    }
+  ],
+  archivists: [{
+      port: 3456,
+      domain: "localhost",
+      action: "launch"
+    },
+    {
+      port: 3457,
+      domain: "localhost",
+      action: "launch"
+    },
+    {
+      port: 3458,
+      domain: "localhost",
+      action: "launch"
+    },
+    {
+      port: 3459,
+      domain: "1.archivist.xyo.network",
+      action: "connect"
+    }
+  ],
+  diviners: [{
+      port: 4456,
+      domain: "1.diviner.xyo.network",
+      action: "connect"
+    },
+    {
+      port: 4457,
+      domain: "localhost",
+      action: "launch"
+    },
+    {
+      port: 4458,
+      domain: "localhost",
+      action: "launch"
+    },
+    {
+      port: 4459,
+      domain: "localhost",
+      action: "launch"
+    }
+  ],
+  clock: 1000
+}
