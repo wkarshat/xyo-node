@@ -155,5 +155,10 @@
       action: "launch"
     }
   ],
+  binon: {
+    folder: [
+      "./BinOn"
+    ]
+  },
   clock: 1000
 }

@@ -164,7 +164,7 @@ class Archivist extends Node {
   }
 
   findPeers(archivists) {
-    console.log("Archivist - findPeers: " + JSON.stringify(this.config));
+    console.log(format("Archivist - findPeers: {}", JSON.stringify(this.config)));
     archivists.forEach((archivist) => {
       this.addPeer(archivist.domain, archivist.port);
     });
