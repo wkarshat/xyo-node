@@ -1,0 +1,10 @@
+{
+  name: "address",
+  type: 0x1001,
+  fields: [{
+      index: 0,
+      name: "value",
+      type: "uint256"
+    }
+  ]
+}

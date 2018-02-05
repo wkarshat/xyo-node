@@ -1,0 +1,47 @@
+{
+  name: "chain",
+  type: 0x2002,
+  extends: "complex",
+  fields: [{
+      index: 0,
+      name: "timestamp",
+      type: "uint32"
+    },{
+      index: 1,
+      name: "payload",
+      type: "typed*"
+    },{
+      index: 2,
+      name: "nonce",
+      type: "uint32"
+    },{
+      index: 3,
+      name: "difficulty",
+      type: "uint16"
+    },{
+      index: 4,
+      name: "p1intervals",
+      type: "uint16*"
+    },{
+      index: 5,
+      name: "p1keys",
+      type: "address*"
+    },{
+      index: 6,
+      name: "p2intervals",
+      type: "uint16*"
+    },{
+      index: 7,
+      name: "p2keys",
+      type: "address*"
+    },{
+      index: 8,
+      name: "p2signatures",
+      type: "signature*"
+    },{
+      index: 9,
+      name: "p1signatures",
+      type: "signature*"
+    }
+  ]
+}

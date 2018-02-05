@@ -1,0 +1,11 @@
+{
+  name: "distance",
+  extends: "simple",
+  type: 5,
+  fields: [{
+      index: 0,
+      name: "value",
+      type: "uint256"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  name: "typed",
+  fields: [{
+      index: 0,
+      name: "type",
+      type: "uint16"
+    }
+  ]
+}

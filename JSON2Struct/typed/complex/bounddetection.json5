@@ -1,0 +1,23 @@
+{
+  name: "bounddetection",
+  type: 0x2001,
+  extends: "detection",
+  fields: [{
+      index: 0,
+      name: "entries",
+      type: "entry*"
+    },{
+      index: 1,
+      name: "id",
+      type: "uint8*"
+    },{
+      index: 2,
+      name: "distance",
+      type: "uint32" //millimeters
+    },{
+      index: 3,
+      name: "strength",
+      type: "int16" //rssi
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  name: "id",
+  extends: "simple",
+  fields: [{
+      index: 0,
+      name: "value",
+      type: "char*"
+    }
+  ]
+}

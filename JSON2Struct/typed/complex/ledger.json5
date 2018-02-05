@@ -1,0 +1,11 @@
+{
+  name: "ledger",
+  type: 0x2004,
+  extends: "complex",
+  fields: [{
+      index: 0,
+      name: "entries",
+      type: "complex*"
+    }
+  ]
+}
