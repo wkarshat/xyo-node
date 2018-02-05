@@ -13,8 +13,8 @@ const initialize = () => {
 
   let binon = new BINON();
 
-  binon.loadObjects(null, () => {
-    console.log(format("BINON LOAD COMPLETE: {}", Object.keys(binon.objects).length));
+  binon.loadMaps(null, () => {
+    console.log(format("BINON LOAD COMPLETE: {}", Object.keys(binon.maps).length));
     if (CONFIG.sentinels && CONFIG.sentinels.length > 0) {
       CONFIG.sentinels.forEach((sentinel) => {
         if (sentinel.action === "launch") {

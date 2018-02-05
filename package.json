@@ -9,6 +9,7 @@
   "author": "Arie Trouw",
   "license": "ISC",
   "dependencies": {
+    "big-integer": "^1.6.26",
     "browser-sync": "^2.23.5",
     "config": "^1.29.2",
     "express": "^4.16.2",

@@ -1,5 +1,5 @@
 {
-  name: "typed",
+  name: "simple",
   fields: [{
       index: 0,
       name: "type",
