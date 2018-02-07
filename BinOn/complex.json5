@@ -1,6 +1,7 @@
 {
   name: "complex",
   extends: "simple",
+  type: 0x2001,
   fields: [{
       index: 0,
       name: "version", //initial verion = 1

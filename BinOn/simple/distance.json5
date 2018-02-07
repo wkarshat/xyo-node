@@ -1,5 +1,6 @@
 {
-  name: "signature",
+  name: "distance", // in mm
+  extends: "simple",
   type: 0x1002,
   fields: [{
       index: 0,

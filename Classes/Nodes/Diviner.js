@@ -86,14 +86,14 @@ class Diviner extends Node {
 
   addArchivist(domain, port) {
     console.log("Diviner - addArchivist");
-    let peer = IOCLIENT.connect("{}:{}", domain, port);
+    let archivist = IOCLIENT.connect("{}:{}", domain, port);
 
-    peer.on("datarequests", (data) => {
+    archivist.on("datarequests", (data) => {
       console.log(format("onDatarequests: {}"), data);
     });
 
-    peer.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
-    this.peers.push(peer);
+    archivist.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
+    this.archivists.push(archivist);
   }
 
   status() {

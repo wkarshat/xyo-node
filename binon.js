@@ -5,12 +5,54 @@ const JSON5 = require("json5"),
   bigInt = require("big-integer"),
   FS = require("fs");
 
+Buffer.prototype.writeInt256 = () => {
+
+};
+
+Buffer.prototype.writeUInt256 = () => {
+
+};
+
 class BinOn {
 
   constructor(defaultObjectName) {
     this.defaultObjectName = defaultObjectName;
     this.maps = {};
     this.mapsByType = {};
+  }
+
+  bufferConcat(list, length) {
+
+    let buffer, pos, len = length;
+
+    if (!Array.isArray(list)) {
+      throw new Error("Usage: bufferConcat(list, [length])");
+    }
+
+    if (list.length === 0) {
+      return new Buffer(0);
+    } else if (list.length === 1) {
+      return list[0];
+    }
+
+    if (typeof len !== "number") {
+      len = 0;
+      for (let i = 0; i < list.length; i++) {
+        let buf = list[i];
+
+        len += buf.length;
+      }
+    }
+
+    buffer = Buffer.alloc(len);
+    pos = 0;
+    for (let i = 0; i < list.length; i++) {
+      let buf = list[i];
+
+      buf.copy(buffer, pos);
+      pos += buf.length;
+    }
+    return buffer;
   }
 
   bufferToJson(buffer, offset) {
@@ -25,8 +67,8 @@ class BinOn {
     return JSON5.stringify(obj);
   }
 
-  bufferToObj(buffer, offset, map) {
-    let obj = {},
+  bufferToObj(buffer, offset, map, target) {
+    let obj = target || {},
       activeMap = map || this.maps[this.defaultObjectName],
       currentOffset = offset || 0;
 
@@ -78,19 +120,41 @@ class BinOn {
   }
 
   objToBuffer(obj, map) {
-    let bi, buffers = [],
-      activeMap = map || this.maps[this.defaultObjectName];
+    let bi, parts, buf, buffers = [],
+      activeMap = this.maps[this.defaultObjectName];
+
+    if (map) {
+      parts = map.split("*");
+      activeMap = this.maps[parts[0]];
+    }
+
+    if (!activeMap) {
+      throw new Error(format("Usage: Map Not Found [{}]", map));
+    }
+
+    console.log("ActiveMap: " + activeMap.name);
+
+    if (activeMap.extends) {
+      buffers.push(this.objToBuffer(obj, activeMap.extends));
+    }
 
     for (let i = 0; i < activeMap.fields.length; i++) {
+      console.log("Field: " + activeMap.fields[i].name);
       switch (activeMap.fields[i].type) {
         case "uint8":
-          buffers.push(new Buffer(1).writeUInt8(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(1);
+          buf.writeUInt8(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "uint16":
-          buffers.push(new Buffer(2).writeUInt16(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(2);
+          buf.writeUInt16BE(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "uint32":
-          buffers.push(new Buffer(4).writeUInt32(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(4);
+          buf.writeUInt32BE(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "uint256":
           bi = bigInt(obj[activeMap.fields[i].name]);
@@ -99,16 +163,24 @@ class BinOn {
           } else if (bi.greater(bigInt("FF", 32))) {
             bi = bigInt("FF", 32);
           }
-          buffers.push(new Buffer(32).writeUInt256(bi), 0);
+          buf = Buffer.alloc(32);
+          buf.writeUInt256(bi);
+          buffers.push(buf);
           break;
         case "int8":
-          buffers.push(new Buffer(1).writeInt8(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(1);
+          buf.writeInt8(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "int16":
-          buffers.push(new Buffer(2).writeInt16(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(2);
+          buf.writeInt16(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "int32":
-          buffers.push(new Buffer(4).writeInt32(parseInt(obj[activeMap.fields[i].name])), 0);
+          buf = Buffer.alloc(4);
+          buf.writeInt32(parseInt(obj[activeMap.fields[i].name]));
+          buffers.push(buf);
           break;
         case "int256":
           bi = bigInt(obj[activeMap.fields[i].name]);
@@ -117,15 +189,29 @@ class BinOn {
           } else if (bi.greater(bigInt("FF", 32))) {
             bi = bigInt("FF", 32);
           }
-          buffers.push(new Buffer(32).writeInt256(bi), 0);
+          buf = Buffer.alloc(32);
+          buf.writeInt256(bi);
+          buffers.push(buf);
           break;
         default: // these are custom types
-          buffers.push(this.objToBuffer(activeMap.fields[i].name, activeMap.fields[i].type));
+          parts = activeMap.fields[i].type.split("*");
+          if (parts.length > 1) {
+            console.log("array");
+            buf = Buffer.alloc(2);
+            buf.writeUInt16BE(obj[activeMap.fields[i].name].length);
+            for (let j = 0; j < obj[activeMap.fields[i].name].length; j++) {
+              buffers.push(this.objToBuffer(obj[activeMap.fields[i].name][j], parts[0]));
+            }
+          } else {
+            console.log("single: " + activeMap.fields[i].name);
+            buffers.push(this.objToBuffer(obj[activeMap.fields[i].name], activeMap.fields[i].type));
+          }
+
           break;
       }
     }
-
-    return obj;
+    console.log(typeof buffers);
+    return this.bufferConcat(buffers);
   }
 
   loadMaps(folder, complete) {
@@ -164,6 +250,7 @@ class BinOn {
                   let obj = JSON5.parse(content);
 
                   this.maps[obj.name] = obj;
+                  this.mapsByType[obj.type] = obj;
                   console.log(format("loadObjects.loaded: {}", obj.name));
                 }
                 fileCount--;

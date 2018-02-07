@@ -1,6 +1,7 @@
 {
-  name: "address",
-  type: 0x1001,
+  name: "signature",
+  extends: "simple",
+  type: 0x1004,
   fields: [{
       index: 0,
       name: "value",

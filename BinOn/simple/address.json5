@@ -1,7 +1,7 @@
 {
-  name: "distance",
+  name: "address",
   extends: "simple",
-  type: 5,
+  type: 0x1005,
   fields: [{
       index: 0,
       name: "value",

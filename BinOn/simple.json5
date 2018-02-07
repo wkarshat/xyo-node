@@ -1,5 +1,6 @@
 {
   name: "simple",
+  type: 0x1001,
   fields: [{
       index: 0,
       name: "type",

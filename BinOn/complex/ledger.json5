@@ -5,7 +5,7 @@
   fields: [{
       index: 0,
       name: "entries",
-      type: "complex*"
+      type: "entry*"
     }
   ]
 }

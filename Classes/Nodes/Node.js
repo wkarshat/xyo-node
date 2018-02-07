@@ -1,10 +1,11 @@
 "use strict";
 
-let Base = require("./Base"),
+let Base = require("../Base"),
   HTTP = require("http"),
   Express = require("express"),
   format = require("string-format"),
   IO = require("socket.io"),
+  CRYPTO = require("crypto"),
   IOCLIENT = require("socket.io-client");
 
 class Node extends Base {
@@ -23,6 +24,7 @@ class Node extends Base {
     this.config = config;
     Node.fromMoniker[moniker] = this;
     Node.fromPort[port] = this;
+    this.generateKeys();
   }
 
   addPeer(domain, port) {
@@ -38,13 +40,23 @@ class Node extends Base {
   }
 
   update() {
-
+    Node.updateCount++;
   }
 
   shutdown() {
     console.log("Node - shutdown");
     delete Base.fromMoniker[this.moniker];
     delete Base.fromPort[this.port];
+  }
+
+  generateKeys() {
+    let diffHell = CRYPTO.createDiffieHellman(256);
+
+    this.pubKey = diffHell.generateKeys("base64");
+    console.log("PubK: " + JSON.stringify(this.pubKey));
+
+    this.privKey = diffHell.getPrivateKey("base64");
+    console.log("PrivK: " + JSON.stringify(this.privKey));
   }
 
   status() {
@@ -66,6 +78,6 @@ class Node extends Base {
 // static variables
 Node.fromMoniker = {};
 Node.fromPort = {};
-Node.updateCopunt = 0;
+Node.updateCount = 0;
 
 module.exports = Node;

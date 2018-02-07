@@ -1,10 +1,11 @@
 {
   name: "id",
   extends: "simple",
+  type: 0x1003,
   fields: [{
       index: 0,
       name: "value",
-      type: "char*"
+      type: "string"
     }
   ]
 }
