@@ -1,5 +1,6 @@
 {
   name: "distance", // in mm
+  class: "Distance",
   extends: "simple",
   type: 0x1002,
   fields: [{

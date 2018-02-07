@@ -1,37 +1,57 @@
 "use strict";
 const TestDataClasses = {},
   XYODATA = require("./xyodata.js"),
-  format = require("string-format");
+  BinOn = require("./binon.js"),
+  format = require("string-format"),
+  binon = new BinOn(XYODATA.classMap, "simple");
 
-TestDataClasses.All = (complete) => {
+TestDataClasses.All = () => {
+
   console.log("***********************************");
   console.log("*      Testing Data Classes       *");
   console.log("***********************************");
 
-  let simple = new XYODATA.Simple(),
-    complex = new XYODATA.Complex(),
-    entry = new XYODATA.Entry(),
-    ledger = new XYODATA.Ledger();
+  binon.loadMaps(null, () => {
 
-  console.log("* ===== Testing 'simple' ===== *");
-  simple.toBuffer((buffer) => {
-    console.log(format("0x{}", buffer.toString("hex")));
-    console.log("* ===== Testing 'complex' ===== *");
-    complex.toBuffer((buffer2) => {
-      console.log(format("0x{}", buffer2.toString("hex")));
-      console.log("* ===== Testing 'entry' ===== *");
-      entry.toBuffer((buffer3) => {
-        console.log(format("0x{}", buffer3.toString("hex")));
-        console.log("* ===== Testing 'ledger' ===== *");
-        ledger.toBuffer((buffer4) => {
-          console.log(format("0x{}", buffer4.toString("hex")));
+    let simple = new XYODATA.Simple(binon),
+      complex = new XYODATA.Complex(binon),
+      entry = new XYODATA.Entry(binon),
+      ledger = new XYODATA.Ledger(binon),
+      b0, b1, b2, b3,
+      res0, res1, res2, res3;
 
-          if (complete) {
-            complete();
-          }
-        });
-      });
-    });
+    console.log("* ===== O2B Testing 'simple' ===== *");
+    b0 = binon.objToBuffer(simple);
+    console.log(format("0x{}", b0.toString("hex")));
+
+    console.log("* ===== O2B Testing 'complex' ===== *");
+    b1 = binon.objToBuffer(complex);
+    console.log(format("0x{}", b1.toString("hex")));
+
+    console.log("* ===== O2B Testing 'entry' ===== *");
+    b2 = binon.objToBuffer(entry);
+    console.log(format("0x{}", b2.toString("hex")));
+
+    console.log("* ===== O2B Testing 'ledger' ===== *");
+    b3 = binon.objToBuffer(ledger);
+    console.log(format("0x{}", b3.toString("hex")));
+
+    console.log("* ===== B2O Testing 'simple' ===== *");
+    res0 = binon.bufferToObj(b0, 0);
+    console.log(JSON.stringify(res0.obj));
+
+    console.log("* ===== B2O Testing 'complex' ===== *");
+    res1 = binon.bufferToObj(b1, 0);
+    console.log(JSON.stringify(res1.obj));
+
+    console.log("* ===== B2O Testing 'entry' ===== *");
+    res2 = binon.bufferToObj(b2, 0);
+    console.log(JSON.stringify(res2.obj));
+
+    console.log("* ===== B2O Testing 'ledger' ===== *");
+    res3 = binon.bufferToObj(b3, 0);
+    console.log(JSON.stringify(res3.obj));
+
   });
 };
 

@@ -1,5 +1,6 @@
 {
   name: "address",
+  class: "Address",
   extends: "simple",
   type: 0x1005,
   fields: [{

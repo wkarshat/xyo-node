@@ -2,7 +2,8 @@
 let XYO = require("./xyo.js"),
   TIMERS = require("timers"),
   CONFIG = require("config"),
-  BINON = require("./binon.js"),
+  BinOn = require("./binon.js"),
+  XYODATA = require("./xyodata.js"),
   TESTDATACLASSES = require("./testdataclasses.js"),
   format = require("string-format");
 
@@ -12,7 +13,7 @@ let XYO = require("./xyo.js"),
 
 const initialize = (complete) => {
 
-    let binon = new BINON();
+    let binon = new BinOn(XYODATA.classMap, "simple");
 
     binon.loadMaps(null, () => {
       console.log(format("BINON LOAD COMPLETE: {}", Object.keys(binon.maps).length));

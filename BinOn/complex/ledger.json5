@@ -1,5 +1,6 @@
 {
   name: "ledger",
+  class: "Ledger",
   type: 0x2004,
   extends: "complex",
   fields: [{
