@@ -21,20 +21,20 @@ TestDataClasses.All = () => {
       res0, res1, res2, res3;
 
     console.log("* ===== O2B Testing 'simple' ===== *");
-    b0 = binon.objToBuffer(simple);
-    console.log(format("0x{}", b0.toString("hex")));
+    b0 = binon.objToBuffer(simple, null, true);
+    console.log(b0.toString("hex"));
 
     console.log("* ===== O2B Testing 'complex' ===== *");
-    b1 = binon.objToBuffer(complex);
-    console.log(format("0x{}", b1.toString("hex")));
+    b1 = binon.objToBuffer(complex, null, true);
+    console.log(b1.toString("hex"));
 
     console.log("* ===== O2B Testing 'entry' ===== *");
-    b2 = binon.objToBuffer(entry);
-    console.log(format("0x{}", b2.toString("hex")));
+    b2 = binon.objToBuffer(entry, null, true);
+    console.log(b2.toString("hex"));
 
     console.log("* ===== O2B Testing 'ledger' ===== *");
-    b3 = binon.objToBuffer(ledger);
-    console.log(format("0x{}", b3.toString("hex")));
+    b3 = binon.objToBuffer(ledger, null, true);
+    console.log(b3.toString("hex"));
 
     console.log("* ===== B2O Testing 'simple' ===== *");
     res0 = binon.bufferToObj(b0, 0);

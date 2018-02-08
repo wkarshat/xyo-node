@@ -6,10 +6,6 @@
       index: 0,
       name: "version", //initial verion = 1
       type: "uint16"
-    },{
-      index: 1,
-      name: "length", //total length of entire object
-      type: "uint32"
     }
   ]
 }

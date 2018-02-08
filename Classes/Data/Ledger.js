@@ -1,7 +1,6 @@
 "use strict";
 
-let Complex = require("./Complex.js"),
-  bigInt = require("big-integer");
+let Complex = require("./Complex.js");
 
 class Ledger extends Complex {
 

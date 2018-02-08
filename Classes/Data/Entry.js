@@ -13,7 +13,7 @@ class Entry extends Complex {
     this.payload = [];
     this.headkeys = [];
     this.tailkeys = [];
-    this.noonce = bigInt(0);
+    this.nonce = bigInt.randBetween("0x0", bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;
     this.p1keys = [];
     this.p2keys = [];

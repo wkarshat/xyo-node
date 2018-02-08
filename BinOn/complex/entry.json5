@@ -22,7 +22,7 @@
     },{
       index: 4,
       name: "nonce",
-      type: "uint32"
+      type: "uint256"
     },{
       index: 5,
       name: "difficulty",

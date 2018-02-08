@@ -12,6 +12,7 @@
     "big-integer": "^1.6.26",
     "browser-sync": "^2.23.5",
     "buffer-concat": "^1.0.0",
+    "buffer-crc32": "^0.2.13",
     "config": "^1.29.2",
     "express": "^4.16.2",
     "gulp": "^3.9.1",
