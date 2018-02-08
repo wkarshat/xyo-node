@@ -23,9 +23,9 @@ class Archivist extends Node {
     this.io.on("connection", (socket) => {
       console.log(format("New Connection"));
       socket.on("peers", (data) => {
-        console.log(format("on peers:{}", data));
+        console.log(format("onPeers[Archivist]:{}", data));
       });
-      socket.emit("peers", format("peers [{}, {}]", moniker, port));
+      socket.emit("peers", format("peers[Archivist] [{}, {}]", moniker, port));
     });
   }
 

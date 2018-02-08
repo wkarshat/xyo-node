@@ -90,7 +90,6 @@ class BinOn {
     }
 
     for (let i = 0; i < activeMap.fields.length; i++) {
-      console.log("Field: " + activeMap.fields[i].name);
       switch (activeMap.fields[i].type) {
         case "uint8":
           obj[activeMap.fields[i].name] = buffer.readUInt8(currentOffset);
@@ -179,14 +178,11 @@ class BinOn {
       throw new Error(format("Usage: Map Not Found [{}]", map));
     }
 
-    console.log("ActiveMap: " + activeMap.name);
-
     if (activeMap.extends) {
       buffers.push(this.objToBuffer(obj, activeMap.extends));
     }
 
     for (let i = 0; i < activeMap.fields.length; i++) {
-      console.log("Field: " + activeMap.fields[i].name);
       switch (activeMap.fields[i].type) {
         case "uint8":
           buf = Buffer.alloc(1);
@@ -241,7 +237,6 @@ class BinOn {
         default: // these are custom types
           parts = activeMap.fields[i].type.split("*");
           if (parts.length > 1) {
-            console.log("array: " + activeMap.fields[i].name);
             buf = Buffer.alloc(2);
             buf.writeUInt16BE(obj[activeMap.fields[i].name].length);
             buffers.push(buf);
@@ -249,7 +244,6 @@ class BinOn {
               buffers.push(this.objToBuffer(obj[activeMap.fields[i].name][j], parts[0]));
             }
           } else {
-            console.log("single: " + activeMap.fields[i].name);
             buffers.push(this.objToBuffer(obj[activeMap.fields[i].name], activeMap.fields[i].type));
           }
 

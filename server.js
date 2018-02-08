@@ -20,7 +20,7 @@ const initialize = (complete) => {
       if (CONFIG.sentinels && CONFIG.sentinels.length > 0) {
         CONFIG.sentinels.forEach((sentinel) => {
           if (sentinel.action === "launch") {
-            XYO.fromPort[sentinel.port] = XYO.fromPort[sentinel.port] || new XYO.Sentinel(String(sentinel.port), sentinel.port, sentinel.config || {});
+            XYO.fromPort[sentinel.port] = XYO.fromPort[sentinel.port] || new XYO.Sentinel(sentinel.domain, sentinel.port, sentinel.config || {});
           }
         });
       }
@@ -28,7 +28,7 @@ const initialize = (complete) => {
       if (CONFIG.bridges && CONFIG.bridges.length > 0) {
         CONFIG.bridges.forEach((bridge) => {
           if (bridge.action === "launch") {
-            XYO.fromPort[bridge.port] = XYO.fromPort[bridge.port] || new XYO.Bridge(String(bridge.port), bridge.port, bridge.config || {});
+            XYO.fromPort[bridge.port] = XYO.fromPort[bridge.port] || new XYO.Bridge(bridge.domain, bridge.port, bridge.config || {});
           }
         });
       }
@@ -36,7 +36,7 @@ const initialize = (complete) => {
       if (CONFIG.archivists && CONFIG.archivists.length > 0) {
         CONFIG.archivists.forEach((archivist) => {
           if (archivist.action === "launch") {
-            XYO.fromPort[archivist.port] = XYO.fromPort[archivist.port] || new XYO.Archivist(String(archivist.port), archivist.port, archivist.config || {});
+            XYO.fromPort[archivist.port] = XYO.fromPort[archivist.port] || new XYO.Archivist(archivist.domain, archivist.port, archivist.config || {});
             XYO.fromPort[archivist.port].findPeers(CONFIG.archivists);
           }
         });
@@ -45,7 +45,7 @@ const initialize = (complete) => {
       if (CONFIG.diviners && CONFIG.diviners.length > 0) {
         CONFIG.diviners.forEach((diviner) => {
           if (diviner.action === "launch") {
-            XYO.fromPort[diviner.port] = XYO.fromPort[diviner.port] || new XYO.Diviner(String(diviner.port), diviner.port, diviner.config || {});
+            XYO.fromPort[diviner.port] = XYO.fromPort[diviner.port] || new XYO.Diviner(diviner.domain, diviner.port, diviner.config || {});
             XYO.fromPort[diviner.port].findPeers(CONFIG.diviners);
             XYO.fromPort[diviner.port].findArchivists(CONFIG.archivists);
           }

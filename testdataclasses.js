@@ -2,7 +2,6 @@
 const TestDataClasses = {},
   XYODATA = require("./xyodata.js"),
   BinOn = require("./binon.js"),
-  format = require("string-format"),
   binon = new BinOn(XYODATA.classMap, "simple");
 
 TestDataClasses.All = () => {

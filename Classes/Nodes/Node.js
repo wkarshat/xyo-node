@@ -29,13 +29,13 @@ class Node extends Base {
 
   addPeer(domain, port) {
     console.log(format("Node - addPeer[{}, {}]", domain, port));
-    let peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
+    let self = this, peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
 
     peer.on("peers", (data) => {
-      console.log(format("onPeers: {}"), data);
+      console.log(format("onPeers[{}]: {}", self.constructor.name, data));
     });
 
-    peer.emit("peers", format("addPeer [{}, {}]", domain, port));
+    peer.emit("peers", format("addPeer[{}] [{}, {}]", self.constructor.name, domain, port));
     this.peers.push(peer);
   }
 
