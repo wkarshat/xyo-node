@@ -1,6 +1,7 @@
 "use strict";
 
-let Base = require("../Base"),
+const debug = require("debug")("Node"),
+  Base = require("../Base"),
   HTTP = require("http"),
   Express = require("express"),
   format = require("string-format"),
@@ -19,20 +20,20 @@ class Node extends Base {
     this.server = HTTP.Server(this.app);
     this.io = new IO(this.server);
     this.server.listen(port);
-
     this.peers = [];
     this.config = config;
+    this.keys = [];
     Node.fromMoniker[moniker] = this;
     Node.fromPort[port] = this;
-    this.generateKeys();
+    this.initKeys(3);
   }
 
   addPeer(domain, port) {
-    console.log(format("Node - addPeer[{}, {}]", domain, port));
+    debug(format("Node - addPeer[{}, {}]", domain, port));
     let self = this, peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
 
     peer.on("peers", (data) => {
-      console.log(format("onPeers[{}]: {}", self.constructor.name, data));
+      debug(format("onPeers[{}]: {}", self.constructor.name, data));
     });
 
     peer.emit("peers", format("addPeer[{}] [{}, {}]", self.constructor.name, domain, port));
@@ -44,23 +45,58 @@ class Node extends Base {
   }
 
   shutdown() {
-    console.log("Node - shutdown");
+    debug("Node - shutdown");
     delete Base.fromMoniker[this.moniker];
     delete Base.fromPort[this.port];
   }
 
-  generateKeys() {
+  initKeys(count) {
+    this.keys = [];
+    for (let i = 0; i < count; i++) {
+      this.keys.push(this.generateKey());
+    }
+  }
+
+  generateKey() {
     let diffHell = CRYPTO.createDiffieHellman(256);
 
-    this.pubKey = diffHell.generateKeys("base64");
-    console.log("PubK: " + JSON.stringify(this.pubKey));
+    return {
+      used: 0,
+      public: diffHell.generateKeys("base64"),
+      private: diffHell.getPrivateKey("base64")
+    };
+  }
 
-    this.privKey = diffHell.getPrivateKey("base64");
-    console.log("PrivK: " + JSON.stringify(this.privKey));
+  sign(payload) {
+    let signatures = [];
+
+    for (let i = 0; i < this.keys.length; i++) {
+      let signer = CRYPTO.createSign("SHA256");
+
+      signer.write(payload);
+      signer.end();
+      signatures.push(signer.sign(this.keys[i].key.private, "hex"));
+    }
+  }
+
+  getKeyUses(index) {
+    return (index + 1) * (index + 1);
+  }
+
+  // Add one to the use number of each key, and if they have been used too much, regenerate
+  spinKeys() {
+    for (let i = 0; i < this.keys.length; i++) {
+      let key = this.keys[i];
+
+      key.used += 1;
+      if (key.used > this.getKeyUses(i)) {
+        this.addKey(key);
+      }
+    }
   }
 
   status() {
-    console.log("Node - status");
+    debug("Node - status");
     return {
       "enabled": true,
       "peers": this.peers.length
@@ -68,7 +104,7 @@ class Node extends Base {
   }
 
   returnJSONStatus(req, res) {
-    console.log("Node - returnJSONStatus");
+    debug("Node - returnJSONStatus");
     let object = Base.fromPort[req.port];
 
     res.status(200).send(JSON.stringify(object.status()));

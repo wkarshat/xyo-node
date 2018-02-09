@@ -1,6 +1,7 @@
 "use strict";
 
-let Simple = require("./Simple.js");
+const debug = require("debug")("Complex"),
+  Simple = require("./Simple.js");
 
 /* Types */
 /* =============

@@ -1,55 +1,58 @@
 "use strict";
-const TestDataClasses = {},
-  XYODATA = require("./xyodata.js"),
-  BinOn = require("./binon.js"),
-  binon = new BinOn(XYODATA.classMap, "simple");
+const debug = require("debug")("testsataclasses"),
+  TestDataClasses = {},
+  XYODATA = require("./xyodata.js");
 
-TestDataClasses.All = () => {
+TestDataClasses.All = (complete) => {
 
-  console.log("***********************************");
-  console.log("*      Testing Data Classes       *");
-  console.log("***********************************");
+  debug("***********************************");
+  debug("*      Testing Data Classes       *");
+  debug("***********************************");
 
-  binon.loadMaps(null, () => {
+  XYODATA.BinOn.loadMaps(null, () => {
 
-    let simple = new XYODATA.Simple(binon),
-      complex = new XYODATA.Complex(binon),
-      entry = new XYODATA.Entry(binon),
-      ledger = new XYODATA.Ledger(binon),
+    let simple = new XYODATA.Simple(),
+      complex = new XYODATA.Complex(),
+      entry = new XYODATA.Entry(),
+      ledger = new XYODATA.Ledger(),
       b0, b1, b2, b3,
       res0, res1, res2, res3;
 
-    console.log("* ===== O2B Testing 'simple' ===== *");
-    b0 = binon.objToBuffer(simple, null, true);
-    console.log(b0.toString("hex"));
+    debug("* ===== O2B Testing 'simple' ===== *");
+    b0 = XYODATA.BinOn.objToBuffer(simple, null, true);
+    debug(b0.toString("hex"));
 
-    console.log("* ===== O2B Testing 'complex' ===== *");
-    b1 = binon.objToBuffer(complex, null, true);
-    console.log(b1.toString("hex"));
+    debug("* ===== O2B Testing 'complex' ===== *");
+    b1 = XYODATA.BinOn.objToBuffer(complex, null, true);
+    debug(b1.toString("hex"));
 
-    console.log("* ===== O2B Testing 'entry' ===== *");
-    b2 = binon.objToBuffer(entry, null, true);
-    console.log(b2.toString("hex"));
+    debug("* ===== O2B Testing 'entry' ===== *");
+    b2 = XYODATA.BinOn.objToBuffer(entry, null, true);
+    debug(b2.toString("hex"));
 
-    console.log("* ===== O2B Testing 'ledger' ===== *");
-    b3 = binon.objToBuffer(ledger, null, true);
-    console.log(b3.toString("hex"));
+    debug("* ===== O2B Testing 'ledger' ===== *");
+    b3 = XYODATA.BinOn.objToBuffer(ledger, null, true);
+    debug(b3.toString("hex"));
 
-    console.log("* ===== B2O Testing 'simple' ===== *");
-    res0 = binon.bufferToObj(b0, 0);
-    console.log(JSON.stringify(res0.obj));
+    debug("* ===== B2O Testing 'simple' ===== *");
+    res0 = XYODATA.BinOn.bufferToObj(b0, 0);
+    debug(JSON.stringify(res0.obj));
 
-    console.log("* ===== B2O Testing 'complex' ===== *");
-    res1 = binon.bufferToObj(b1, 0);
-    console.log(JSON.stringify(res1.obj));
+    debug("* ===== B2O Testing 'complex' ===== *");
+    res1 = XYODATA.BinOn.bufferToObj(b1, 0);
+    debug(JSON.stringify(res1.obj));
 
-    console.log("* ===== B2O Testing 'entry' ===== *");
-    res2 = binon.bufferToObj(b2, 0);
-    console.log(JSON.stringify(res2.obj));
+    debug("* ===== B2O Testing 'entry' ===== *");
+    res2 = XYODATA.BinOn.bufferToObj(b2, 0);
+    debug(JSON.stringify(res2.obj));
 
-    console.log("* ===== B2O Testing 'ledger' ===== *");
-    res3 = binon.bufferToObj(b3, 0);
-    console.log(JSON.stringify(res3.obj));
+    debug("* ===== B2O Testing 'ledger' ===== *");
+    res3 = XYODATA.BinOn.bufferToObj(b3, 0);
+    debug(JSON.stringify(res3.obj));
+
+    if (complete) {
+      complete();
+    }
 
   });
 };

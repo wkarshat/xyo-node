@@ -1,6 +1,7 @@
 "use strict";
 
-let Complex = require("./Complex.js");
+const debug = require("debug")("Ledger"),
+  Complex = require("./Complex.js");
 
 class Ledger extends Complex {
 

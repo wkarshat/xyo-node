@@ -1,6 +1,7 @@
 "use strict";
 
-let Complex = require("./Complex.js"),
+const debug = require("debug")("Entry"),
+  Complex = require("./Complex.js"),
   bigInt = require("big-integer");
 
 class Entry extends Complex {
@@ -13,7 +14,7 @@ class Entry extends Complex {
     this.payload = [];
     this.headkeys = [];
     this.tailkeys = [];
-    this.nonce = bigInt.randBetween("0x0", bigInt("0x1").shiftLeft(255));
+    this.nonce = bigInt.randBetween(bigInt("0x0"), bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;
     this.p1keys = [];
     this.p2keys = [];

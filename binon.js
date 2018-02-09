@@ -1,16 +1,18 @@
 "use strict";
 
-const JSON5 = require("json5"),
+const debug = require("debug")("BinOn"),
+  JSON5 = require("json5"),
   format = require("string-format"),
   bigInt = require("big-integer"),
   crc32 = require("buffer-crc32"),
-  FS = require("fs");
+  FS = require("fs"),
+  BINON = {};
 
 class BinOn {
 
   constructor(classMap, defaultObjectName) {
     if (typeof classMap != "object") {
-      throw new Error("BinOn requires a class map for construction");
+      throw new Error(format("BinOn requires a class map for construction[{}]", typeof classMap));
     }
     this.maps = {};
     this.mapsByType = {};
@@ -127,7 +129,7 @@ class BinOn {
           parts = activeMap.fields[i].type.split("*");
           if (parts.length > 1) {
             length = buffer.readUInt16BE(currentOffset);
-            console.log(format("array: [{}, {}]", activeMap.fields[i].name, currentOffset));
+            debug(format("array: [{}, {}]", activeMap.fields[i].name, currentOffset));
             currentOffset += 2;
             obj[activeMap.fields[i].name] = [];
             for (let j = 0; j < length; j++) {
@@ -137,7 +139,7 @@ class BinOn {
               currentOffset = subResult.offset;
             }
           } else {
-            console.log(format("single: [{}, {}]", activeMap.fields[i].name, currentOffset));
+            debug(format("single: [{}, {}]", activeMap.fields[i].name, currentOffset));
             let subResult = this.bufferToObj(buffer, currentOffset);
 
             obj[activeMap.fields[i].name] = subResult.obj;
@@ -166,7 +168,7 @@ class BinOn {
   }
 
   objToBuffer(obj, map, crc) {
-    let bi, parts, buf, buffers = [],
+    let bi, parts, buf, strBuf, buffers = [],
       activeMap = this.maps[obj.map];
 
     if (map) {
@@ -206,7 +208,13 @@ class BinOn {
           } else if (bi.greater(bigInt("0x1").shiftLeft(256))) {
             bi = bigInt("0x1").shiftLeft(256).minus(1);
           }
-          buf = Buffer.from(bi.toString(16), "hex", 32);
+
+          strBuf = bi.toString(16);
+          while (strBuf.length < 64) {
+            strBuf = format("0{}", strBuf);
+          }
+
+          buf = Buffer.from(strBuf, "hex", 32);
           buffers.push(buf);
           break;
         case "int8":
@@ -231,7 +239,11 @@ class BinOn {
           } else if (bi.greater(bigInt("0x1").shiftLeft(255))) {
             bi = bigInt("0x1").shiftLeft(255).minus(1);
           }
-          buf = Buffer.from(bi.toString(16), "hex", 32);
+          strBuf = bi.toString(16);
+          while (strBuf.length < 64) {
+            strBuf = format("0{}", strBuf);
+          }
+          buf = Buffer.from(strBuf, "hex", 32);
           buffers.push(buf);
           break;
         default: // these are custom types
@@ -266,7 +278,7 @@ class BinOn {
         console.error(format("readdir: {}", error));
         complete();
       } else {
-        console.log(format("loadObjects.folder: {}", filenames.length));
+        debug(format("loadObjects.folder: {}", filenames.length));
         let fileCount = filenames.length;
 
         filenames.forEach((filename) => {
@@ -295,7 +307,7 @@ class BinOn {
 
                   this.maps[obj.name] = obj;
                   this.mapsByType[obj.type] = obj;
-                  console.log(format("loadObjects.loaded: {}", obj.name));
+                  debug(format("loadObjects.loaded: {}", obj.name));
                 }
                 fileCount--;
                 if (fileCount === 0) {
@@ -310,4 +322,8 @@ class BinOn {
   }
 }
 
-module.exports = BinOn;
+BINON.create = function(classMap, defaultObjectName) {
+  return new BinOn(classMap, defaultObjectName);
+};
+
+module.exports = BINON;

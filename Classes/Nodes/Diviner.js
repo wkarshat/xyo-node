@@ -1,6 +1,7 @@
 "use strict";
 
-let Node = require("./Node.js"),
+const debug = require("debug")("Diviner"),
+  Node = require("./Node.js"),
   HTTP = require("http"),
   IOCLIENT = require("socket.io-client"),
   format = require("string-format");
@@ -8,7 +9,7 @@ let Node = require("./Node.js"),
 class Diviner extends Node {
 
   constructor(moniker, port, config) {
-    console.log("Diviner - constructor");
+    debug("Diviner - constructor");
     super(moniker, port, config);
     this.archivists = [];
   }
@@ -65,7 +66,7 @@ class Diviner extends Node {
   }
 
   findPeers(diviners) {
-    console.log("Diviner - findPeers");
+    debug("Diviner - findPeers");
     diviners.forEach((diviner) => {
       this.addPeer(
         diviner.domain,
@@ -75,7 +76,7 @@ class Diviner extends Node {
   }
 
   findArchivists(archivists) {
-    console.log("Diviner - findArchivists");
+    debug("Diviner - findArchivists");
     archivists.forEach((archivist) => {
       this.addArchivist(
         archivist.domain,
@@ -85,15 +86,24 @@ class Diviner extends Node {
   }
 
   addArchivist(domain, port) {
-    console.log("Diviner - addArchivist");
+    debug("Diviner - addArchivist");
     let archivist = IOCLIENT.connect("{}:{}", domain, port);
 
     archivist.on("datarequests", (data) => {
-      console.log(format("onDatarequests: {}"), data);
+      debug(format("onDatarequests: {}"), data);
     });
 
     archivist.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
     this.archivists.push(archivist);
+  }
+
+  update(config) {
+    debug("Sentinel:update");
+    super.update(config);
+    if (this.archivists.length === 0) {
+      this.findArchivists(config.archivists);
+      this.findPeers(config.diviners);
+    }
   }
 
   status() {

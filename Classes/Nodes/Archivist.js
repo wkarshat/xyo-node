@@ -1,12 +1,13 @@
 "use strict";
 
-let Node = require("./Node.js"),
+const debug = require("debug")("Archivist"),
+  Node = require("./Node.js"),
   format = require("string-format");
 
 class Archivist extends Node {
 
   constructor(moniker, port, config) {
-    console.log("Archivist - constructor");
+    debug("Archivist - constructor");
     let self;
 
     super(moniker, port, config);
@@ -21,16 +22,16 @@ class Archivist extends Node {
     });
 
     this.io.on("connection", (socket) => {
-      console.log(format("New Connection"));
+      debug(format("New Connection"));
       socket.on("peers", (data) => {
-        console.log(format("onPeers[Archivist]:{}", data));
+        debug(format("onPeers[Archivist]:{}", data));
       });
       socket.emit("peers", format("peers[Archivist] [{}, {}]", moniker, port));
     });
   }
 
   get(req, res) {
-    console.log("Archivist - get");
+    debug("Archivist - get");
     let contentType = req.headers["content-type"],
       parts = req.path.split("/"),
       id = null;
@@ -65,7 +66,7 @@ class Archivist extends Node {
   }
 
   post(req, res) {
-    console.log("Archivist - post");
+    debug("Archivist - post");
     let action = req.body.action;
 
     switch (action) {
@@ -112,7 +113,7 @@ class Archivist extends Node {
   }
 
   find(keys, max, epoch, entries) {
-    console.log("Archivist - find");
+    debug("Archivist - find");
     let entryList = entries || {};
 
     keys.forEach((key) => {
@@ -132,7 +133,7 @@ class Archivist extends Node {
   }
 
   addEntriesToDatabase(entries) {
-    console.log("Archivist - addEntriesToDatabase");
+    debug("Archivist - addEntriesToDatabase");
     entries.forEach((entry) => {
       let pk1Entries = this.entriesByKey[entry.pk1] || [],
         pk2Entries = this.entriesByKey[entry.pk2] || [];
@@ -147,7 +148,7 @@ class Archivist extends Node {
   }
 
   addPayloadsToDatabase(payloads) {
-    console.log("Archivist - addPayloadsToDatabase");
+    debug("Archivist - addPayloadsToDatabase");
     let entries = [];
 
     payloads.forEach((payload) => {
@@ -164,7 +165,7 @@ class Archivist extends Node {
   }
 
   findPeers(archivists) {
-    console.log(format("Archivist - findPeers: {}", JSON.stringify(this.config)));
+    debug(format("Archivist - findPeers: {}", JSON.stringify(this.config)));
     archivists.forEach((archivist) => {
       this.addPeer(archivist.domain, archivist.port);
     });

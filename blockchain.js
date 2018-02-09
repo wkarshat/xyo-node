@@ -44,7 +44,7 @@ BLOCKCHAIN.isValidNewBlock = (newBlock, previousBlock) => {
     // invalid previoushash
     return false;
   } else if (BLOCKCHAIN.calculateHashForBlock(newBlock) !== newBlock.hash) {
-    // console.log('invalid hash: ' + calculateHashForBlock(newBlock) + ' ' + newBlock.hash);
+    // debug('invalid hash: ' + calculateHashForBlock(newBlock) + ' ' + newBlock.hash);
     return false;
   }
   return true;
@@ -70,7 +70,7 @@ BLOCKCHAIN.initHttpServer = () => {
     var newBlock = generateNextBlock(req.body.data);
     addBlock(newBlock);
     broadcast(responseLatestMsg());
-    console.log('block added: ' + JSON.stringify(newBlock));
+    debug('block added: ' + JSON.stringify(newBlock));
     res.send();
   });
   app.get('/peers', (req, res) => {
@@ -80,5 +80,5 @@ BLOCKCHAIN.initHttpServer = () => {
     connectToPeers([req.body.peer]);
     res.send();
   });
-  app.listen(http_port, () => console.log('Listening http on port: ' + http_port)); */
+  app.listen(http_port, () => debug('Listening http on port: ' + http_port)); */
 };
