@@ -1,0 +1,8 @@
+{
+  bridges: {
+    sdmthope: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

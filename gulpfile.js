@@ -2,7 +2,8 @@
 
 const gulp = require("gulp"),
   nodemon = require("gulp-nodemon"),
-  env = require("gulp-env");
+  env = require("gulp-env"),
+  clear = require('clear');
 
 gulp.task("default", ["nodemon"], () => {});
 
@@ -21,6 +22,7 @@ gulp.task("nodemon", (cb) => {
   }).on("start", () => {
     // to avoid nodemon being started multiple times
     // thanks @matthisk
+    clear();
     if (!started) {
       cb();
       started = true;

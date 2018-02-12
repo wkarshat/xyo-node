@@ -1,0 +1,8 @@
+{
+  bridges: {
+    sdwestfieldmv: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

@@ -8,9 +8,9 @@ const debug = require("debug")("Diviner"),
 
 class Diviner extends Node {
 
-  constructor(moniker, port, config) {
+  constructor(moniker, domain, port, config) {
     debug("constructor");
-    super(moniker, port, config);
+    super(moniker, domain, port, config);
     this.archivists = [];
   }
 
@@ -71,22 +71,34 @@ class Diviner extends Node {
 
   findPeers(diviners) {
     debug("findPeers");
-    diviners.forEach((diviner) => {
-      this.addPeer(
-        diviner.domain,
-        diviner.port
-      );
-    });
+    let key;
+
+    for (key in diviners) {
+      let diviner = diviners[key];
+
+      if (!(diviner.port === this.port && diviner.domain === this.domain)) {
+        this.addPeer(
+          diviner.domain,
+          diviner.port
+        );
+      }
+    }
   }
 
   findArchivists(archivists) {
     debug("findArchivists");
-    archivists.forEach((archivist) => {
-      this.addArchivist(
-        archivist.domain,
-        archivist.port
-      );
-    });
+    let key;
+
+    for (key in archivists) {
+      let archivist = archivists[key];
+
+      if (!(archivist.port === this.port && archivist.domain === this.domain)) {
+        this.addArchivist(
+          archivist.domain,
+          archivist.port
+        );
+      }
+    }
   }
 
   addArchivist(domain, port) {
@@ -113,6 +125,7 @@ class Diviner extends Node {
   status() {
     let status = super.status();
 
+    status.type = "Diviner";
     status.archivists = this.archivists.length;
     return status;
   }

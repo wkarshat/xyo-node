@@ -7,45 +7,63 @@ const debug = require("debug")("Bridge"),
 
 class Bridge extends Node {
 
-  constructor(moniker, port, config) {
+  constructor(moniker, domain, port, config) {
     debug("constructor");
-    super(moniker, port, config);
+    super(moniker, domain, port, config);
     this.entries = [];
     this.sentinels = [];
     this.archivists = [];
   }
 
   findSentinels(sentinels) {
-    debug("detectSentinels");
+    debug("findSentinels");
+    let key;
+
     this.sentinels = []; // remove old ones
-    sentinels.forEach((sentinel) => {
-      this.addSentinel(
-        sentinel.domain,
-        sentinel.port
-      );
-    });
+    for (key in sentinels) {
+      let sentinel = sentinels[key];
+
+      if (!(sentinel.port === this.port && sentinel.domain === this.domain)) {
+        this.addSentinel(
+          sentinel.domain,
+          sentinel.port
+        );
+      }
+    }
   }
 
   findArchivists(archivists) {
-    debug("detectArchivinsts");
+    debug("findArchivists");
+    let key;
+
     this.archivists = []; // remove old ones
-    archivists.forEach((archivist) => {
-      this.addArchivist(
-        archivist.domain,
-        archivist.port
-      );
-    });
+    for (key in archivists) {
+      let archivist = archivists[key];
+
+      if (!(archivist.port === this.port && archivist.domain === this.domain)) {
+        this.addArchivist(
+          archivist.domain,
+          archivist.port
+        );
+      }
+    }
   }
 
   findBridges(bridges) {
     debug("detectBridges");
+    let key;
+
     this.peers = []; // remove old ones
-    bridges.forEach((bridge) => {
-      this.addPeer(
-        bridge.domain,
-        bridge.port
-      );
-    });
+    for (key in bridges) {
+      let bridge = bridges[key];
+
+      if (!(bridge.port === this.port && bridge.domain === this.domain)) {
+        this.addPeer(
+          bridge.domain,
+          bridge.port
+        );
+      }
+    }
   }
 
   addSentinel(domain, port) {
@@ -84,6 +102,10 @@ class Bridge extends Node {
 
   status() {
     let status = super.status();
+
+    status.type = "Bridge";
+    status.sentinels = this.sentinels.length;
+    status.archivists = this.archivists.length;
 
     return status;
   }

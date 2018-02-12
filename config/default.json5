@@ -1,9 +1,10 @@
 {
-  sentinels: [{
-      moniker: "sdxyhq", //San Diego XY HeadQuarters
+  sentinels: {
+    sdxyhq:{
+      description: "San Diego XY HeadQuarters",
       port: 1456,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -13,11 +14,11 @@
         }
       }
     },
-    {
-      moniker: "sdzoo", //San Diego Zoo
+    sdzoo:{
+      description: "San Diego Zoo",
       port: 1457,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -27,11 +28,11 @@
         }
       }
     },
-    {
-      moniker: "sdairport", //San Diego Airport
+    sdairport:{
+      description: "San Diego Airport",
       port: 1458,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -41,11 +42,11 @@
         }
       }
     },
-    {
-      moniker: "sdseaworld", //San Diego Sea World
+    sdseaworld:{
+      description: "San Diego Sea World",
       port: 1459,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -55,12 +56,13 @@
         }
       }
     }
-  ],
-  bridges: [{
-      moniker: "sdxyhq", //San Diego XY HeadQuarters
+  },
+  bridges: {
+    sdxyhq:{
+      description: "San Diego XY HeadQuarters",
       port: 2456,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -70,11 +72,11 @@
         }
       }
     },
-    {
-      moniker: "sdhoteldel", //San Diego Hotel Del Corinado
+    sdhoteldel:{
+      description: "San Diego Hotel Del Coronado",
       port: 2457,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -84,11 +86,11 @@
         }
       }
     },
-    {
-      moniker: "sdmthope", //San Diego Mt. Hope
+    sdmthope:{
+      description: "San Diego Mt. Hope",
       port: 2458,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -98,11 +100,11 @@
         }
       }
     },
-    {
-      moniker: "sdwestfieldmv", //San Diego Westfield Mall Mission Valley
+    sdwestfieldmv:{
+      description: "San Diego Westfield Mall Mission Valley",
       port: 2459,
       domain: "localhost",
-      action: "launch",
+      action: "connect",
       config: {
         range: "10000000", //in mm (10km)
         location: {
@@ -112,53 +114,56 @@
         }
       }
     }
-  ],
-  archivists: [{
+  },
+  archivists: {
+    xy1: {
       port: 3456,
-      domain: "localhost",
-      action: "launch"
-    },
-    {
-      port: 3457,
-      domain: "localhost",
-      action: "launch"
-    },
-    {
-      port: 3458,
-      domain: "localhost",
-      action: "launch"
-    },
-    {
-      port: 3459,
       domain: "1.archivist.xyo.network",
       action: "connect"
+    },
+    xy2: {
+      port: 3457,
+      domain: "2.archivist.xyo.network",
+      action: "connect"
+    },
+    xy3: {
+      port: 3458,
+      domain: "3.archivist.xyo.network",
+      action: "connect"
+    },
+    xy4: {
+      port: 3459,
+      domain: "4.archivist.xyo.network",
+      action: "connect"
     }
-  ],
-  diviners: [{
+  },
+  diviners: {
+    xy1: {
       port: 4456,
       domain: "1.diviner.xyo.network",
       action: "connect"
     },
-    {
+    xy2: {
       port: 4457,
-      domain: "localhost",
-      action: "launch"
+      domain: "2.diviner.xyo.network",
+      action: "connect"
     },
-    {
+    xy3: {
       port: 4458,
-      domain: "localhost",
-      action: "launch"
+      domain: "3.diviner.xyo.network",
+      action: "connect"
     },
-    {
+    xy4: {
       port: 4459,
-      domain: "localhost",
-      action: "launch"
+      domain: "4.diviner.xyo.network",
+      action: "connect"
     }
-  ],
+  },
   binon: {
     folder: [
       "./BinOn"
     ]
   },
+  testclasses: true,
   clock: 10000
 }

@@ -3,6 +3,8 @@ const debug = require("debug")("xyodata"),
   BINON = require("./binon.js"),
   XYODATA = {};
 
+debug("loading...");
+
 XYODATA.Simple = require("./Classes/Data/Simple.js");
 XYODATA.Complex = require("./Classes/Data/Complex.js");
 XYODATA.Entry = require("./Classes/Data/Entry.js");
@@ -14,7 +16,5 @@ XYODATA.BinOn = BINON.create({
   "entry": XYODATA.Entry,
   "ledger": XYODATA.Ledger
 }, "simple");
-
-debug("Loaded");
 
 module.exports = XYODATA;

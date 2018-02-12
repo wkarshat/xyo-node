@@ -1,0 +1,8 @@
+{
+  sentinels: {
+    sdseaworld: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

@@ -1,0 +1,8 @@
+{
+  sentinels: {
+    sdzoo: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

@@ -1,0 +1,31 @@
+{
+  sentinels: {
+    sdxyhq:{
+      action: "launch"
+    },
+    sdzoo: {
+      action: "launch"
+    },
+    sdairport: {
+      action: "launch"
+    },
+    sdseaworld: {
+      action: "launch"
+    }
+  },
+  bridges: {
+    sdxyhq:{
+      action: "launch"
+    },
+    sdhoteldel: {
+      action: "launch"
+    },
+    sdmthope: {
+      action: "launch"
+    },
+    sdwestfieldmv: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

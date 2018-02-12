@@ -11,11 +11,15 @@ const debug = require("debug")("Node"),
 
 class Node extends Base {
 
-  constructor(moniker, port, config) {
+  constructor(moniker, domain, port, config) {
     debug("constructor");
+    let self;
+
     super();
+    self = this;
     this.moniker = moniker;
 
+    this.domain = domain;
     this.port = port;
     this.app = Express();
     this.server = HTTP.Server(this.app);
@@ -27,18 +31,42 @@ class Node extends Base {
     Node.fromMoniker[moniker] = this;
     Node.fromPort[port] = this;
     this.initKeys(3);
+    this.app.get("*", (req, res) => {
+      self.get(req, res);
+    });
+    this.app.post("*", (req, res) => {
+      self.post(req, res);
+    });
+  }
+
+  get(req, res) {
+    debug("get");
+    let contentType = req.headers["content-type"];
+
+    if (!contentType || contentType.indexOf("application/json") !== 0) {
+      return res.status(415).send(req.path);
+    } else {
+      return this.returnJSONStatus(req, res);
+    }
+  }
+
+  post(req, res) {
+    debug("post");
+    return res.status(404).send(req.path);
   }
 
   addPeer(domain, port) {
-    debug("addPeer[{}, {}]", domain, port);
-    let self = this, peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
+    debug(format("addPeer[{}, {}]", domain, port));
+    if (!(this.domain === domain && this.port === port)) {
+      let self = this, peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
 
-    peer.on("peers", (data) => {
-      debug(format("onPeers[{}]: {}", self.constructor.name, data));
-    });
+      peer.on("peers", (data) => {
+        debug(format("onPeers[{}]: {}", self.constructor.name, data));
+      });
 
-    peer.emit("peers", format("addPeer[{}] [{}, {}]", self.constructor.name, domain, port));
-    this.peers.push(peer);
+      peer.emit("peers", format("addPeer[{}] [{}, {}]", self.constructor.name, domain, port));
+      this.peers.push(peer);
+    }
   }
 
   update() {
@@ -105,16 +133,18 @@ class Node extends Base {
   status() {
     debug("status");
     return {
+      "moniker": this.moniker,
       "enabled": true,
-      "peers": this.peers.length
+      "peers": this.peers.length,
+      "domain": this.domain,
+      "port": this.port,
+      "config": this.config
     };
   }
 
   returnJSONStatus(req, res) {
     debug("returnJSONStatus");
-    let object = Base.fromPort[req.port];
-
-    res.status(200).send(JSON.stringify(object.status()));
+    res.status(200).send(JSON.stringify(this.status()));
   }
 }
 

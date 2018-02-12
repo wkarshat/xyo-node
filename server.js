@@ -2,47 +2,58 @@
 let debug = require("debug")("server"),
   XYO = require("./xyo.js"),
   CONFIG = require("config"),
-  TESTDATACLASSES = require("./testdataclasses.js");
+  TESTDATACLASSES = require("./testdataclasses.js"),
+  XYODATA = require("./xyodata.js");
 
 /* ================= */
 /*  Local Functions  */
 /* ================= */
 
 const initialize = (complete) => {
-    debug("Initializing...");
-    if (CONFIG.sentinels && CONFIG.sentinels.length > 0) {
-      CONFIG.sentinels.forEach((sentinel) => {
+    debug("initializing...");
+    let key;
+
+    if (CONFIG.sentinels) {
+      for (key in CONFIG.sentinels) {
+        let sentinel = CONFIG.sentinels[key];
+
         if (sentinel.action === "launch") {
-          XYO.fromPort[sentinel.port] = XYO.fromPort[sentinel.port] || new XYO.Sentinel(sentinel.domain, sentinel.port, sentinel.config || {});
+          XYO.fromPort[sentinel.port] = XYO.fromPort[sentinel.port] || new XYO.Sentinel(sentinel.moniker, sentinel.domain, sentinel.port, sentinel.config || {});
         }
-      });
+      }
     }
 
-    if (CONFIG.bridges && CONFIG.bridges.length > 0) {
-      CONFIG.bridges.forEach((bridge) => {
+    if (CONFIG.bridges) {
+      for (key in CONFIG.bridges) {
+        let bridge = CONFIG.bridges[key];
+
         if (bridge.action === "launch") {
-          XYO.fromPort[bridge.port] = XYO.fromPort[bridge.port] || new XYO.Bridge(bridge.domain, bridge.port, bridge.config || {});
+          XYO.fromPort[bridge.port] = XYO.fromPort[bridge.port] || new XYO.Bridge(bridge.moniker, bridge.domain, bridge.port, bridge.config || {});
         }
-      });
+      }
     }
 
-    if (CONFIG.archivists && CONFIG.archivists.length > 0) {
-      CONFIG.archivists.forEach((archivist) => {
+    if (CONFIG.archivists) {
+      for (key in CONFIG.archivists) {
+        let archivist = CONFIG.archivists[key];
+
         if (archivist.action === "launch") {
-          XYO.fromPort[archivist.port] = XYO.fromPort[archivist.port] || new XYO.Archivist(archivist.domain, archivist.port, archivist.config || {});
+          XYO.fromPort[archivist.port] = XYO.fromPort[archivist.port] || new XYO.Archivist(archivist.moniker, archivist.domain, archivist.port, archivist.config || {});
           XYO.fromPort[archivist.port].findPeers(CONFIG.archivists);
         }
-      });
+      }
     }
 
-    if (CONFIG.diviners && CONFIG.diviners.length > 0) {
-      CONFIG.diviners.forEach((diviner) => {
+    if (CONFIG.diviners) {
+      for (key in CONFIG.diviners) {
+        let diviner = CONFIG.diviners[key];
+
         if (diviner.action === "launch") {
-          XYO.fromPort[diviner.port] = XYO.fromPort[diviner.port] || new XYO.Diviner(diviner.domain, diviner.port, diviner.config || {});
+          XYO.fromPort[diviner.port] = XYO.fromPort[diviner.port] || new XYO.Diviner(diviner.moniker, diviner.domain, diviner.port, diviner.config || {});
           XYO.fromPort[diviner.port].findPeers(CONFIG.diviners);
           XYO.fromPort[diviner.port].findArchivists(CONFIG.archivists);
         }
-      });
+      }
     }
 
     if (complete) {
@@ -68,6 +79,10 @@ const initialize = (complete) => {
       updateObjects();
 
     }, CONFIG.clock);
+  },
+  run = () => {
+    updateObjects();
+    startTimers();
   };
 
 /* ============= */
@@ -86,8 +101,10 @@ app.post("/mineBlock", (req, res) => {
 }); */
 
 initialize(() => {
-  TESTDATACLASSES.All(() => {
-    updateObjects();
-    startTimers();
+  XYODATA.BinOn.loadMaps(null, () => {
+    if (CONFIG.testclasses) {
+      TESTDATACLASSES.All();
+    }
+    run();
   });
 });

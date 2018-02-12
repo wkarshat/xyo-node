@@ -1,0 +1,8 @@
+{
+  bridges: {
+    sdhoteldel: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

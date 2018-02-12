@@ -8,34 +8,44 @@ const debug = require("debug")("Sentinel"),
 
 class Sentinel extends Node {
 
-  constructor(moniker, port, config) {
+  constructor(moniker, domain, port, config) {
     debug("constructor");
 
-    super(moniker, port, config);
+    super(moniker, domain, port, config);
     this.entries = [];
     this.bridges = [];
   }
 
   findSentinels(sentinels) {
-    debug("detectSentinels");
+    debug("findSentinels");
+    let key;
+
     this.peers = []; // remove old ones
-    sentinels.forEach((sentinel) => {
-      this.addPeer(
-        sentinel.domain,
-        sentinel.port
-      );
-    });
+    for (key in sentinels) {
+      let sentinel = sentinels[key];
+
+      if (!(sentinel.port === this.port && sentinel.domain === this.domain)) {
+        this.addPeer(
+          sentinel.domain,
+          sentinel.port
+        );
+      }
+    }
   }
 
   findBridges(bridges) {
     debug("findBridges");
+    let key;
+
     this.bridges = []; // remove old ones
-    bridges.forEach((bridge) => {
+    for (key in bridges) {
+      let bridge = bridges[key];
+
       this.addBridge(
         bridge.domain,
         bridge.port
       );
-    });
+    }
   }
 
   addBridge(domain, port) {
@@ -73,6 +83,8 @@ class Sentinel extends Node {
   status() {
     let status = super.status();
 
+    status.type = "Sentinel";
+    status.bridges = this.bridges.length;
     return status;
   }
 }

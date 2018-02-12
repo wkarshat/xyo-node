@@ -1,0 +1,8 @@
+{
+  diviners: {
+    xy1: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

@@ -1,0 +1,8 @@
+{
+  bridges: {
+    sdxyhq: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

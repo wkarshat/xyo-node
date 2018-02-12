@@ -6,20 +6,12 @@ const debug = require("debug")("Archivist"),
 
 class Archivist extends Node {
 
-  constructor(moniker, port, config) {
+  constructor(moniker, domain, port, config) {
     debug("constructor");
-    let self;
 
-    super(moniker, port, config);
-    self = this;
+    super(moniker, domain, port, config);
     this.entries = [];
     this.entriesByKey = {};
-    this.app.get("*", (req, res) => {
-      self.get(req, res);
-    });
-    this.app.post("/", (req, res) => {
-      self.post(req, res);
-    });
 
     this.io.on("connection", (socket) => {
       debug(format("New Connection"));
@@ -32,37 +24,26 @@ class Archivist extends Node {
 
   get(req, res) {
     debug("get");
-    let contentType = req.headers["content-type"],
-      parts = req.path.split("/"),
+    let parts = req.path.split("/"),
       id = null;
 
     if (parts.length > 1) {
       id = parts[1];
     }
 
-    if (id.length === 0) {
-      if (!contentType || contentType.indexOf("application/json") !== 0) {
-        this.returnJSONStatus(req, res);
-      } else {
-        res.send({
-          "objects": Node.fromMoniker.length,
-          "updates": Node.updateCount
-        });
-      }
-    } else if (id != null) {
+    if (id != null && id.length > 0) {
       let entries = this.entriesByKey[id];
 
       if (entries) {
-        res.send({
+        return res.send({
           "id": id,
           "entries": this.entriesByKey[id]
         });
-      } else {
-        res.status(404).send(format("(${}) Not Found", id));
       }
-    } else {
-      res.status(404).send(req.path);
+      return res.status(404).send(format("({}) Not Found", id));
     }
+
+    return super.get(req, res);
   }
 
   post(req, res) {
@@ -74,14 +55,14 @@ class Archivist extends Node {
         if (req.body.entries) {
           this.addEntriesToDatabase(req.body.entries);
           res.status(201);
-          res.send({
+          return res.send({
             "entriesAdded": req.body.entries.length,
             "totalEntries": this.entries.length
           });
         } else if (req.body.payloads) {
           this.addPayloadsToDatabase(req.body.payloads);
           res.status(201);
-          res.send({
+          return res.send({
             "entriesAdded": req.body.payloads.length,
             "totalEntries": this.entries.length
           });
@@ -92,7 +73,7 @@ class Archivist extends Node {
           let entries = this.find(req.body.keys, req.body.max, req.body.epoch);
 
           res.status(200);
-          res.send({
+          return res.send({
             "entriesFound": Object.keys(entries).length,
             "entries": entries
           });
@@ -100,16 +81,15 @@ class Archivist extends Node {
           let entries = this.find(req.body.keys, req.body.max);
 
           res.status(200);
-          res.send({
+          return res.send({
             "entriesFound": Object.keys(entries).length,
             "entries": entries
           });
         }
-        break;
       default:
-        res.send("default");
         break;
     }
+    return super.post(req, res);
   }
 
   find(keys, max, epoch, entries) {
@@ -166,15 +146,21 @@ class Archivist extends Node {
 
   findPeers(archivists) {
     debug(format("findPeers: {}", JSON.stringify(this.config)));
-    archivists.forEach((archivist) => {
+    let key;
+
+    for (key in archivists) {
+      let archivist = archivists[key];
+
       this.addPeer(archivist.domain, archivist.port);
-    });
+    }
   }
 
   status() {
     let status = super.status();
 
-    status.archivists = this.archivists.length;
+    status.type = "Archivist";
+    status.entries = this.entries.length;
+
     return status;
   }
 }

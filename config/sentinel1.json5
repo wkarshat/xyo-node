@@ -1,0 +1,8 @@
+{
+  sentinels: {
+    sdxyhq: {
+      action: "launch"
+    }
+  },
+  testclasses: false
+}

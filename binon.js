@@ -335,7 +335,6 @@ class BinOn {
 }
 
 BINON.create = function(classMap, defaultObjectName) {
-  debug("create");
   return new BinOn(classMap, defaultObjectName);
 };
 
