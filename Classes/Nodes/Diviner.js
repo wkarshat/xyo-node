@@ -9,12 +9,13 @@ const debug = require("debug")("Diviner"),
 class Diviner extends Node {
 
   constructor(moniker, port, config) {
-    debug("Diviner - constructor");
+    debug("constructor");
     super(moniker, port, config);
     this.archivists = [];
   }
 
   query(question, callback) {
+    debug("query");
     this.findBlocks(question, (blocks) => {
       this.processBlocks(question, blocks, (answer) => {
         callback({
@@ -28,10 +29,12 @@ class Diviner extends Node {
   }
 
   processBlocks(question, blocks, callback) {
+    debug("processBlocks");
     callback(null, {});
   }
 
   findBlocks(pk, epoch, callback) {
+    debug("findBlocks");
     let count = this.archivist.length,
       blocks = [];
 
@@ -49,6 +52,7 @@ class Diviner extends Node {
   }
 
   getBlock(pk, epoch, url, callback) {
+    debug("getBlock");
     HTTP.get(url + format("/?key={}&epoch={}", pk, epoch), (resp) => {
       let data = "";
 
@@ -66,7 +70,7 @@ class Diviner extends Node {
   }
 
   findPeers(diviners) {
-    debug("Diviner - findPeers");
+    debug("findPeers");
     diviners.forEach((diviner) => {
       this.addPeer(
         diviner.domain,
@@ -76,7 +80,7 @@ class Diviner extends Node {
   }
 
   findArchivists(archivists) {
-    debug("Diviner - findArchivists");
+    debug("findArchivists");
     archivists.forEach((archivist) => {
       this.addArchivist(
         archivist.domain,
@@ -86,7 +90,7 @@ class Diviner extends Node {
   }
 
   addArchivist(domain, port) {
-    debug("Diviner - addArchivist");
+    debug("addArchivist");
     let archivist = IOCLIENT.connect("{}:{}", domain, port);
 
     archivist.on("datarequests", (data) => {
@@ -98,7 +102,7 @@ class Diviner extends Node {
   }
 
   update(config) {
-    debug("Sentinel:update");
+    debug("update");
     super.update(config);
     if (this.archivists.length === 0) {
       this.findArchivists(config.archivists);

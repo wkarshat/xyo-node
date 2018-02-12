@@ -8,7 +8,7 @@ const debug = require("debug")("Bridge"),
 class Bridge extends Node {
 
   constructor(moniker, port, config) {
-    debug("Bridge - constructor");
+    debug("constructor");
     super(moniker, port, config);
     this.entries = [];
     this.sentinels = [];
@@ -16,7 +16,7 @@ class Bridge extends Node {
   }
 
   findSentinels(sentinels) {
-    debug("Bridge - detectSentinels");
+    debug("detectSentinels");
     this.sentinels = []; // remove old ones
     sentinels.forEach((sentinel) => {
       this.addSentinel(
@@ -27,7 +27,7 @@ class Bridge extends Node {
   }
 
   findArchivists(archivists) {
-    debug("Bridge - detectArchivinsts");
+    debug("detectArchivinsts");
     this.archivists = []; // remove old ones
     archivists.forEach((archivist) => {
       this.addArchivist(
@@ -38,7 +38,7 @@ class Bridge extends Node {
   }
 
   findBridges(bridges) {
-    debug("Bridge - detectBridges");
+    debug("detectBridges");
     this.peers = []; // remove old ones
     bridges.forEach((bridge) => {
       this.addPeer(
@@ -49,7 +49,7 @@ class Bridge extends Node {
   }
 
   addSentinel(domain, port) {
-    debug("Bridge - addSentinel");
+    debug("addSentinel");
     let sentinel = IOCLIENT.connect("{}:{}", domain, port);
 
     sentinel.on("datarequests", (data) => {
@@ -61,7 +61,7 @@ class Bridge extends Node {
   }
 
   addArchivist(domain, port) {
-    debug("Bridge - addArchivists");
+    debug("addArchivists");
     let archivist = IOCLIENT.connect("{}:{}", domain, port);
 
     archivist.on("datarequests", (data) => {
@@ -73,7 +73,7 @@ class Bridge extends Node {
   }
 
   update(config) {
-    debug("Sentinel:update");
+    debug("update");
     super.update(config);
     if (this.sentinels.length === 0) {
       this.findSentinels(config.sentinels);

@@ -6,6 +6,7 @@ const debug = require("debug")("Ledger"),
 class Ledger extends Complex {
 
   constructor() {
+    debug("constructor");
     super();
     this.type = 0x2004;
     this.map = "ledger";

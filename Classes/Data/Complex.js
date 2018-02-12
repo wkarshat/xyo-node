@@ -14,6 +14,7 @@ const debug = require("debug")("Complex"),
 class Complex extends Simple {
 
   constructor() {
+    debug("constructor");
     super();
     this.type = 0x2001;
     this.version = 1;

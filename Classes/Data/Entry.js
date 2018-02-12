@@ -7,6 +7,7 @@ const debug = require("debug")("Entry"),
 class Entry extends Complex {
 
   constructor() {
+    debug("constructor");
     super();
     this.type = 0x2003;
     this.map = "entry";

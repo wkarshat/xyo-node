@@ -1,7 +1,7 @@
 "use strict";
 
-const Base = require("../Base.js"),
-  XYODATA = require("../../xyodata.js");
+const debug = require("debug")("Simple"),
+  Base = require("../Base.js");
 
 /* Types */
 /* =============
@@ -15,14 +15,14 @@ const Base = require("../Base.js"),
 class Simple extends Base {
 
   constructor() {
+    debug("constructor");
     super();
     this.type = 0x1001;
     this.map = "simple";
   }
 
-  toBuffer() {
-    debug(JSON.stringify(XYODATA));
-    return XYODATA.BinOn.objToBuffer(this, null, true);
+  toBuffer(binOn) {
+    return binOn.objToBuffer(this, null, true);
   }
 }
 

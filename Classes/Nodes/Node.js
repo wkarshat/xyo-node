@@ -12,6 +12,7 @@ const debug = require("debug")("Node"),
 class Node extends Base {
 
   constructor(moniker, port, config) {
+    debug("constructor");
     super();
     this.moniker = moniker;
 
@@ -29,7 +30,7 @@ class Node extends Base {
   }
 
   addPeer(domain, port) {
-    debug(format("Node - addPeer[{}, {}]", domain, port));
+    debug("addPeer[{}, {}]", domain, port);
     let self = this, peer = IOCLIENT.connect(format("http://{}:{}", domain, port));
 
     peer.on("peers", (data) => {
@@ -41,16 +42,18 @@ class Node extends Base {
   }
 
   update() {
+    debug("update");
     Node.updateCount++;
   }
 
   shutdown() {
-    debug("Node - shutdown");
+    debug("shutdown");
     delete Base.fromMoniker[this.moniker];
     delete Base.fromPort[this.port];
   }
 
   initKeys(count) {
+    debug("initKeys");
     this.keys = [];
     for (let i = 0; i < count; i++) {
       this.keys.push(this.generateKey());
@@ -58,6 +61,7 @@ class Node extends Base {
   }
 
   generateKey() {
+    debug("generateKey");
     let diffHell = CRYPTO.createDiffieHellman(256);
 
     return {
@@ -68,6 +72,7 @@ class Node extends Base {
   }
 
   sign(payload) {
+    debug("sign");
     let signatures = [];
 
     for (let i = 0; i < this.keys.length; i++) {
@@ -80,11 +85,13 @@ class Node extends Base {
   }
 
   getKeyUses(index) {
+    debug("getKeyUses");
     return (index + 1) * (index + 1);
   }
 
   // Add one to the use number of each key, and if they have been used too much, regenerate
   spinKeys() {
+    debug("spinkKeys");
     for (let i = 0; i < this.keys.length; i++) {
       let key = this.keys[i];
 
@@ -96,7 +103,7 @@ class Node extends Base {
   }
 
   status() {
-    debug("Node - status");
+    debug("status");
     return {
       "enabled": true,
       "peers": this.peers.length
@@ -104,7 +111,7 @@ class Node extends Base {
   }
 
   returnJSONStatus(req, res) {
-    debug("Node - returnJSONStatus");
+    debug("returnJSONStatus");
     let object = Base.fromPort[req.port];
 
     res.status(200).send(JSON.stringify(object.status()));

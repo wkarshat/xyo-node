@@ -11,6 +11,7 @@ const debug = require("debug")("BinOn"),
 class BinOn {
 
   constructor(classMap, defaultObjectName) {
+    debug("constructor");
     if (typeof classMap != "object") {
       throw new Error(format("BinOn requires a class map for construction[{}]", typeof classMap));
     }
@@ -21,15 +22,17 @@ class BinOn {
   }
 
   readInt256BE(buffer, offset) {
+    debug("readInt256BE");
     return bigInt(buffer.toString("hex", offset, offset + 32), 16);
   }
 
   readUInt256BE(buffer, offset) {
+    debug("readUInt256BE");
     return bigInt(buffer.toString("hex", offset, offset + 32), 16);
   }
 
   bufferConcat(list, length) {
-
+    debug("bufferConcat");
     let buffer, pos, len = length;
 
     if (!Array.isArray(list)) {
@@ -63,26 +66,31 @@ class BinOn {
   }
 
   bufferToJson(buffer, offset) {
+    debug("bufferToJson");
     let obj = this.bufferToObj(buffer, offset);
 
     return JSON.stringify(obj);
   }
 
   bufferToJson5(buffer, offset) {
+    debug("bufferToJson5");
     let obj = this.bufferToObj(buffer, offset);
 
     return JSON5.stringify(obj);
   }
 
   getTypeFromBuffer(buffer) {
+    debug("getTypeFromBuffer");
     return buffer.readUInt16BE(0);
   }
 
   getMapFromBuffer(buffer) {
+    debug("getMapFromBuffer");
     return this.mapsByType[this.getTypeFromBuffer(buffer)].name;
   }
 
   bufferToObj(buffer, offset, target, map) {
+    debug("bufferToObj");
     let parts, length, activeMap = this.maps[map || this.getMapFromBuffer(buffer)],
       obj = target || new this.classMap[activeMap.name](),
       currentOffset = offset || 0;
@@ -156,18 +164,21 @@ class BinOn {
   }
 
   jsonToBuffer(json) {
+    debug("jsonToBuffer");
     let obj = JSON.parse(json);
 
     return this.objToBuffer(obj);
   }
 
   json5ToBuffer(json5) {
+    debug("json5ToBuffer");
     let obj = JSON.parse(json5);
 
     return this.objToBuffer(obj);
   }
 
   objToBuffer(obj, map, crc) {
+    debug("objToBuffer");
     let bi, parts, buf, strBuf, buffers = [],
       activeMap = this.maps[obj.map];
 
@@ -271,6 +282,7 @@ class BinOn {
   }
 
   loadMaps(folder, complete) {
+    debug("loadMaps");
     let folderToLoad = folder || "./BinOn";
 
     FS.readdir(folderToLoad, (error, filenames) => {
@@ -323,6 +335,7 @@ class BinOn {
 }
 
 BINON.create = function(classMap, defaultObjectName) {
+  debug("create");
   return new BinOn(classMap, defaultObjectName);
 };
 

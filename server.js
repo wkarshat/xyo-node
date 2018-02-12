@@ -1,7 +1,6 @@
 "use strict";
 let debug = require("debug")("server"),
   XYO = require("./xyo.js"),
-  TIMERS = require("timers"),
   CONFIG = require("config"),
   TESTDATACLASSES = require("./testdataclasses.js");
 
@@ -65,7 +64,7 @@ const initialize = (complete) => {
     }
   },
   startTimers = () => {
-    TIMERS.setInterval(() => {
+    setInterval(() => {
       updateObjects();
 
     }, CONFIG.clock);

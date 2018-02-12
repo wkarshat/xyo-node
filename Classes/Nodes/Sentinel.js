@@ -9,7 +9,7 @@ const debug = require("debug")("Sentinel"),
 class Sentinel extends Node {
 
   constructor(moniker, port, config) {
-    debug("Sentinel - constructor");
+    debug("constructor");
 
     super(moniker, port, config);
     this.entries = [];
@@ -17,7 +17,7 @@ class Sentinel extends Node {
   }
 
   findSentinels(sentinels) {
-    debug("Sentinel - detectSentinels");
+    debug("detectSentinels");
     this.peers = []; // remove old ones
     sentinels.forEach((sentinel) => {
       this.addPeer(
@@ -28,7 +28,7 @@ class Sentinel extends Node {
   }
 
   findBridges(bridges) {
-    debug("Sentinel - detectBridges");
+    debug("findBridges");
     this.bridges = []; // remove old ones
     bridges.forEach((bridge) => {
       this.addBridge(
@@ -39,7 +39,7 @@ class Sentinel extends Node {
   }
 
   addBridge(domain, port) {
-    debug("Sentinel - addBridge");
+    debug("addBridge");
     let bridge = IOCLIENT.connect("{}:{}", domain, port);
 
     bridge.on("datarequests", (data) => {
@@ -51,17 +51,17 @@ class Sentinel extends Node {
   }
 
   generateRandomEntry() {
+    debug("generateRandomEntry");
     let peer = Math.floor(Math.random() * 10);
 
     if (peer < this.peers.length) {
       let entry = new XYODATA.Entry();
 
-      this.peers[peer].emit(entry.toBuffer());
+      this.peers[peer].emit(entry.toBuffer(XYODATA.BinOn));
     }
   }
 
   update(config) {
-    debug("Sentinel:update");
     super.update(config);
     if (this.bridges.length === 0) {
       this.findSentinels(config.sentinels);

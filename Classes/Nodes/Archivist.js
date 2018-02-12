@@ -7,7 +7,7 @@ const debug = require("debug")("Archivist"),
 class Archivist extends Node {
 
   constructor(moniker, port, config) {
-    debug("Archivist - constructor");
+    debug("constructor");
     let self;
 
     super(moniker, port, config);
@@ -31,7 +31,7 @@ class Archivist extends Node {
   }
 
   get(req, res) {
-    debug("Archivist - get");
+    debug("get");
     let contentType = req.headers["content-type"],
       parts = req.path.split("/"),
       id = null;
@@ -66,7 +66,7 @@ class Archivist extends Node {
   }
 
   post(req, res) {
-    debug("Archivist - post");
+    debug("post");
     let action = req.body.action;
 
     switch (action) {
@@ -113,7 +113,7 @@ class Archivist extends Node {
   }
 
   find(keys, max, epoch, entries) {
-    debug("Archivist - find");
+    debug("find");
     let entryList = entries || {};
 
     keys.forEach((key) => {
@@ -133,7 +133,7 @@ class Archivist extends Node {
   }
 
   addEntriesToDatabase(entries) {
-    debug("Archivist - addEntriesToDatabase");
+    debug("addEntriesToDatabase");
     entries.forEach((entry) => {
       let pk1Entries = this.entriesByKey[entry.pk1] || [],
         pk2Entries = this.entriesByKey[entry.pk2] || [];
@@ -148,7 +148,7 @@ class Archivist extends Node {
   }
 
   addPayloadsToDatabase(payloads) {
-    debug("Archivist - addPayloadsToDatabase");
+    debug("addPayloadsToDatabase");
     let entries = [];
 
     payloads.forEach((payload) => {
@@ -165,7 +165,7 @@ class Archivist extends Node {
   }
 
   findPeers(archivists) {
-    debug(format("Archivist - findPeers: {}", JSON.stringify(this.config)));
+    debug(format("findPeers: {}", JSON.stringify(this.config)));
     archivists.forEach((archivist) => {
       this.addPeer(archivist.domain, archivist.port);
     });
