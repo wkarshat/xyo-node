@@ -8,9 +8,9 @@ const debug = require("debug")("Diviner"),
 
 class Diviner extends Node {
 
-  constructor(moniker, domain, port, config) {
+  constructor(moniker, host, port, config) {
     debug("constructor");
-    super(moniker, domain, port, config);
+    super(moniker, host, port, config);
     this.archivists = [];
   }
 
@@ -76,10 +76,10 @@ class Diviner extends Node {
     for (key in diviners) {
       let diviner = diviners[key];
 
-      if (!(diviner.port === this.port && diviner.domain === this.domain)) {
+      if (!(diviner.ports.pipe === this.ports.pipe && diviner.host === this.host)) {
         this.addPeer(
-          diviner.domain,
-          diviner.port
+          diviner.host,
+          diviner.ports.pipe
         );
       }
     }
@@ -92,24 +92,24 @@ class Diviner extends Node {
     for (key in archivists) {
       let archivist = archivists[key];
 
-      if (!(archivist.port === this.port && archivist.domain === this.domain)) {
+      if (!(archivist.ports.pipe === this.ports.pipe && archivist.host === this.host)) {
         this.addArchivist(
-          archivist.domain,
-          archivist.port
+          archivist.host,
+          archivist.ports.pipe
         );
       }
     }
   }
 
-  addArchivist(domain, port) {
+  addArchivist(host, port) {
     debug("addArchivist");
-    let archivist = IOCLIENT.connect("{}:{}", domain, port);
+    let archivist = IOCLIENT.connect("{}:{}", host, port);
 
     archivist.on("datarequests", (data) => {
       debug(format("onDatarequests: {}"), data);
     });
 
-    archivist.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
+    archivist.emit("datarequests", format("datarequests: hello[{},{}]", host, port));
     this.archivists.push(archivist);
   }
 

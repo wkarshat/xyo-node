@@ -6,20 +6,12 @@ const debug = require("debug")("Archivist"),
 
 class Archivist extends Node {
 
-  constructor(moniker, domain, port, config) {
+  constructor(moniker, host, port, config) {
     debug("constructor");
 
-    super(moniker, domain, port, config);
+    super(moniker, host, port, config);
     this.entries = [];
     this.entriesByKey = {};
-
-    this.io.on("connection", (socket) => {
-      debug(format("New Connection"));
-      socket.on("peers", (data) => {
-        debug(format("onPeers[Archivist]:{}", data));
-      });
-      socket.emit("peers", format("peers[Archivist] [{}, {}]", moniker, port));
-    });
   }
 
   get(req, res) {
@@ -151,7 +143,7 @@ class Archivist extends Node {
     for (key in archivists) {
       let archivist = archivists[key];
 
-      this.addPeer(archivist.domain, archivist.port);
+      this.addPeer(archivist.host, archivist.ports.pipe);
     }
   }
 

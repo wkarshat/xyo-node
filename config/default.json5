@@ -2,8 +2,11 @@
   sentinels: {
     sdxyhq:{
       description: "San Diego XY HeadQuarters",
-      port: 1456,
-      domain: "localhost",
+      ports:{
+        api:1456,
+        pipe:5456
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -16,8 +19,11 @@
     },
     sdzoo:{
       description: "San Diego Zoo",
-      port: 1457,
-      domain: "localhost",
+      ports:{
+        api:1457,
+        pipe:5457
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -30,8 +36,11 @@
     },
     sdairport:{
       description: "San Diego Airport",
-      port: 1458,
-      domain: "localhost",
+      ports:{
+        api:1458,
+        pipe:5458
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -44,8 +53,11 @@
     },
     sdseaworld:{
       description: "San Diego Sea World",
-      port: 1459,
-      domain: "localhost",
+      ports:{
+        api:1459,
+        pipe:5459
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -60,8 +72,11 @@
   bridges: {
     sdxyhq:{
       description: "San Diego XY HeadQuarters",
-      port: 2456,
-      domain: "localhost",
+      ports:{
+        api:2456,
+        pipe:6456
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -74,8 +89,11 @@
     },
     sdhoteldel:{
       description: "San Diego Hotel Del Coronado",
-      port: 2457,
-      domain: "localhost",
+      ports:{
+        api:2457,
+        pipe:6457
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -88,8 +106,11 @@
     },
     sdmthope:{
       description: "San Diego Mt. Hope",
-      port: 2458,
-      domain: "localhost",
+      ports:{
+        api:2458,
+        pipe:6458
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -102,8 +123,11 @@
     },
     sdwestfieldmv:{
       description: "San Diego Westfield Mall Mission Valley",
-      port: 2459,
-      domain: "localhost",
+      ports:{
+        api:2459,
+        pipe:6459
+      },
+      host: "localhost",
       action: "connect",
       config: {
         range: "10000000", //in mm (10km)
@@ -117,45 +141,69 @@
   },
   archivists: {
     xy1: {
-      port: 3456,
-      domain: "1.archivist.xyo.network",
+      ports:{
+        api:3456,
+        pipe:7456
+      },
+      host: "1.archivist.xyo.network",
       action: "connect"
     },
     xy2: {
-      port: 3457,
-      domain: "2.archivist.xyo.network",
+      ports:{
+        api:3457,
+        pipe:7457
+      },
+      host: "2.archivist.xyo.network",
       action: "connect"
     },
     xy3: {
-      port: 3458,
-      domain: "3.archivist.xyo.network",
+      ports:{
+        api:3458,
+        pipe:7458
+      },
+      host: "3.archivist.xyo.network",
       action: "connect"
     },
     xy4: {
-      port: 3459,
-      domain: "4.archivist.xyo.network",
+      ports:{
+        api:3459,
+        pipe:7459
+      },
+      host: "4.archivist.xyo.network",
       action: "connect"
     }
   },
   diviners: {
     xy1: {
-      port: 4456,
-      domain: "1.diviner.xyo.network",
+      ports:{
+        api:4456,
+        pipe:8456
+      },
+      host: "1.diviner.xyo.network",
       action: "connect"
     },
     xy2: {
-      port: 4457,
-      domain: "2.diviner.xyo.network",
+      ports:{
+        api:4457,
+        pipe:8457
+      },
+      host: "2.diviner.xyo.network",
       action: "connect"
     },
     xy3: {
-      port: 4458,
-      domain: "3.diviner.xyo.network",
+      ports:{
+        api:4458,
+        pipe:8458
+      },
+      host: "3.diviner.xyo.network",
       action: "connect"
     },
     xy4: {
-      port: 4459,
-      domain: "4.diviner.xyo.network",
+      ports:{
+        api:4459,
+        pipe:8459
+      },
+      host: "4.diviner.xyo.network",
       action: "connect"
     }
   },

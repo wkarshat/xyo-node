@@ -2,16 +2,14 @@
 
 const debug = require("debug")("Sentinel"),
   Node = require("./Node.js"),
-  XYODATA = require("../../xyodata.js"),
-  IOCLIENT = require("socket.io-client"),
-  format = require("string-format");
+  XYODATA = require("../../xyodata.js");
 
 class Sentinel extends Node {
 
-  constructor(moniker, domain, port, config) {
+  constructor(moniker, host, port, config) {
     debug("constructor");
 
-    super(moniker, domain, port, config);
+    super(moniker, host, port, config);
     this.entries = [];
     this.bridges = [];
   }
@@ -24,10 +22,10 @@ class Sentinel extends Node {
     for (key in sentinels) {
       let sentinel = sentinels[key];
 
-      if (!(sentinel.port === this.port && sentinel.domain === this.domain)) {
+      if (!(sentinel.ports.pipe === this.ports.pipe && sentinel.host === this.host)) {
         this.addPeer(
-          sentinel.domain,
-          sentinel.port
+          sentinel.host,
+          sentinel.ports.pipe
         );
       }
     }
@@ -42,32 +40,25 @@ class Sentinel extends Node {
       let bridge = bridges[key];
 
       this.addBridge(
-        bridge.domain,
+        bridge.host,
         bridge.port
       );
     }
   }
 
-  addBridge(domain, port) {
+  addBridge(host, port) {
     debug("addBridge");
-    let bridge = IOCLIENT.connect("{}:{}", domain, port);
-
-    bridge.on("datarequests", (data) => {
-      debug(format("onDatarequests: {}"), data);
-    });
-
-    bridge.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
-    this.bridges.push(bridge);
+    this.bridges.push({ host: host, port: port });
   }
 
-  generateRandomEntry() {
-    debug("generateRandomEntry");
+  initiateBoundWitness() {
+    debug("initiateBoundWitness");
     let peer = Math.floor(Math.random() * 10);
 
     if (peer < this.peers.length) {
       let entry = new XYODATA.Entry();
 
-      this.peers[peer].emit(entry.toBuffer(XYODATA.BinOn));
+      this.out(this.peers[peer], entry.toBuffer(XYODATA.BinOn));
     }
   }
 
@@ -77,7 +68,7 @@ class Sentinel extends Node {
       this.findSentinels(config.sentinels);
       this.findBridges(config.bridges);
     }
-    this.generateRandomEntry();
+    this.initiateBoundWitness();
   }
 
   status() {

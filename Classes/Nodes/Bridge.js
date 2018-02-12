@@ -7,9 +7,9 @@ const debug = require("debug")("Bridge"),
 
 class Bridge extends Node {
 
-  constructor(moniker, domain, port, config) {
+  constructor(moniker, host, port, config) {
     debug("constructor");
-    super(moniker, domain, port, config);
+    super(moniker, host, port, config);
     this.entries = [];
     this.sentinels = [];
     this.archivists = [];
@@ -23,10 +23,10 @@ class Bridge extends Node {
     for (key in sentinels) {
       let sentinel = sentinels[key];
 
-      if (!(sentinel.port === this.port && sentinel.domain === this.domain)) {
+      if (!(sentinel.ports.pipe === this.ports.pipe && sentinel.host === this.host)) {
         this.addSentinel(
-          sentinel.domain,
-          sentinel.port
+          sentinel.host,
+          sentinel.ports.pipe
         );
       }
     }
@@ -40,10 +40,10 @@ class Bridge extends Node {
     for (key in archivists) {
       let archivist = archivists[key];
 
-      if (!(archivist.port === this.port && archivist.domain === this.domain)) {
+      if (!(archivist.ports.pipe === this.ports.pipe && archivist.host === this.host)) {
         this.addArchivist(
-          archivist.domain,
-          archivist.port
+          archivist.host,
+          archivist.ports.pipe
         );
       }
     }
@@ -57,36 +57,36 @@ class Bridge extends Node {
     for (key in bridges) {
       let bridge = bridges[key];
 
-      if (!(bridge.port === this.port && bridge.domain === this.domain)) {
+      if (!(bridge.ports.pipe === this.ports.pipe && bridge.host === this.host)) {
         this.addPeer(
-          bridge.domain,
-          bridge.port
+          bridge.host,
+          bridge.ports.pipe
         );
       }
     }
   }
 
-  addSentinel(domain, port) {
+  addSentinel(host, port) {
     debug("addSentinel");
-    let sentinel = IOCLIENT.connect("{}:{}", domain, port);
+    let sentinel = IOCLIENT.connect("{}:{}", host, port);
 
     sentinel.on("datarequests", (data) => {
       debug(format("onDatarequests: {}"), data);
     });
 
-    sentinel.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
+    sentinel.emit("datarequests", format("datarequests: hello[{},{}]", host, port));
     this.sentinels.push(sentinel);
   }
 
-  addArchivist(domain, port) {
+  addArchivist(host, port) {
     debug("addArchivists");
-    let archivist = IOCLIENT.connect("{}:{}", domain, port);
+    let archivist = IOCLIENT.connect("{}:{}", host, port);
 
     archivist.on("datarequests", (data) => {
       debug(format("onDatarequests: {}"), data);
     });
 
-    archivist.emit("datarequests", format("datarequests: hello[{},{}]", domain, port));
+    archivist.emit("datarequests", format("datarequests: hello[{},{}]", host, port));
     this.archivists.push(archivist);
   }
 
