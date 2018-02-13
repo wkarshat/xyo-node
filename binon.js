@@ -114,7 +114,10 @@ class BinOn {
           }]
         };
       } else {
-        return { obj: null, offset: currentOffset };
+        return {
+          obj: null,
+          offset: currentOffset
+        };
       }
     }
 
@@ -191,6 +194,16 @@ class BinOn {
             obj[activeMap.fields[i].name] = this.readInt256BE(buffer, currentOffset);
           }
           currentOffset += 32;
+          break;
+        case 'buffer':
+          length = buffer.readUInt16BE(currentOffset);
+          currentOffset += 2;
+          if (isNative) {
+            obj = buffer.slice(currentOffset, currentOffset + length);
+          } else {
+            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + length);
+          }
+          currentOffset += length;
           break;
         case 'signature':
           if (isNative) {
@@ -381,6 +394,19 @@ class BinOn {
             strBuf = format('0{}', strBuf);
           }
           buf = Buffer.from(strBuf, 'hex', 32);
+          buffers.push(buf);
+          break;
+        case 'buffer':
+          buf = Buffer.alloc(2);
+          if (isNative) {
+            buf.writeUInt16BE(obj.length);
+            buffers.push(buf);
+            buf = obj;
+          } else {
+            buf.writeUInt16BE(obj[activeMap.fields[i].name].length);
+            buffers.push(buf);
+            buf = obj[activeMap.fields[i].name];
+          }
           buffers.push(buf);
           break;
         case 'signature':

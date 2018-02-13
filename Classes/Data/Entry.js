@@ -12,7 +12,7 @@ class Entry extends Complex {
     this.type = 0x2003;
     this.map = "entry";
     this.version = 1;
-    this.payload = [];
+    this.payloads = [];
     this.nonce = bigInt.randBetween(bigInt("0x0"), bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;
     this.p1keys = [];

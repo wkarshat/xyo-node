@@ -6,11 +6,10 @@ const debug = require("debug")("Archivist"),
 
 class Archivist extends Node {
 
-  constructor(moniker, host, port, config) {
+  constructor(moniker, host, ports, config) {
     debug("constructor");
 
-    super(moniker, host, port, config);
-    this.entries = [];
+    super(moniker, host, ports, config);
     this.entriesByKey = {};
   }
 
@@ -104,6 +103,36 @@ class Archivist extends Node {
     return entryList;
   }
 
+  onEntry(socket, entry) {
+    debug(format("onEntry: {}"));
+    let self = this;
+
+    super.onEntry(entry);
+    if (entry.p1signatures.length === 0) {
+      debug("onEntry: P1");
+      entry.p1Sign((payload) => {
+        return self.sign(payload);
+      }, () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+      });
+    } else if (entry.p2signatures.length === 0) {
+      debug("onEntry: P2");
+      entry.p2Sign((payload) => {
+        return self.sign(payload);
+      },
+      () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+      });
+    } else {
+      debug("onEntry: DONE");
+      this.addEntryToLedger(entry);
+    }
+  }
+
   addEntriesToDatabase(entries) {
     debug("addEntriesToDatabase");
     entries.forEach((entry) => {
@@ -151,7 +180,6 @@ class Archivist extends Node {
     let status = super.status();
 
     status.type = "Archivist";
-    status.entries = this.entries.length;
 
     return status;
   }

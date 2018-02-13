@@ -224,6 +224,7 @@ class Node extends Base {
       'host': this.host,
       'port': this.port,
       'config': this.config,
+      'type': this.name,
       'ledger': {
         'entries': this.entries.length
       }

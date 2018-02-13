@@ -7,10 +7,10 @@ const debug = require("debug")("Sentinel"),
 
 class Sentinel extends Node {
 
-  constructor(moniker, host, port, config) {
+  constructor(moniker, host, ports, config) {
     debug("constructor");
 
-    super(moniker, host, port, config);
+    super(moniker, host, ports, config);
     this.bridges = [];
   }
 
@@ -41,7 +41,7 @@ class Sentinel extends Node {
 
       this.addBridge(
         bridge.host,
-        bridge.port
+        bridge.ports
       );
     }
   }
@@ -76,9 +76,11 @@ class Sentinel extends Node {
     }
   }
 
-  addBridge(host, port) {
+  addBridge(host, ports) {
     debug("addBridge");
-    this.bridges.push({ host: host, port: port });
+    if (!(this.host === host && this.ports.pipe === ports.pipe)) {
+      this.bridges.push({ host: host, port: ports.pipe });
+    }
   }
 
   initiateBoundWitness() {
@@ -97,6 +99,26 @@ class Sentinel extends Node {
     }
   }
 
+  initiateBridgeSend(maxEntries) {
+    debug("initiateBridgeSend");
+    let bridge = Math.floor(Math.random() * 10);
+
+    if (bridge < this.bridges.length) {
+      let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
+
+      entry.p2keys = [];
+      entry.payloads = [];
+      for (let i = 0; i < maxEntries && i < this.entries.length; i++) {
+        entry.payloads.push(this.entries[i].toBuffer());
+      }
+      for (let i = 0; i < this.keys.length; i++) {
+        entry.p2keys.push(this.keys[i].public);
+      }
+      buffer = entry.toBuffer();
+      this.out(this.bridges[bridge], buffer);
+    }
+  }
+
   update(config) {
     super.update(config);
     if (this.bridges.length === 0) {
@@ -104,6 +126,7 @@ class Sentinel extends Node {
       this.findBridges(config.bridges);
     }
     this.initiateBoundWitness();
+    // this.initiateBridgeSend(2);
   }
 
   status() {

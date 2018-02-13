@@ -8,9 +8,9 @@ const debug = require("debug")("Diviner"),
 
 class Diviner extends Node {
 
-  constructor(moniker, host, port, config) {
+  constructor(moniker, host, ports, config) {
     debug("constructor");
-    super(moniker, host, port, config);
+    super(moniker, host, ports, config);
     this.archivists = [];
   }
 

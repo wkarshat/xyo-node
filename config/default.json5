@@ -145,7 +145,7 @@
         api:3456,
         pipe:7456
       },
-      host: "1.archivist.xyo.network",
+      host: "localhost",
       action: "connect"
     },
     xy2: {
@@ -179,7 +179,7 @@
         api:4456,
         pipe:8456
       },
-      host: "1.diviner.xyo.network",
+      host: "localhost",
       action: "connect"
     },
     xy2: {
@@ -213,5 +213,5 @@
     ]
   },
   testdataclasses: true,
-  clock: 5000
+  clock: 2000
 }

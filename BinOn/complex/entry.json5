@@ -5,8 +5,8 @@
   extends: "complex",
   fields: [{
       index: 0,
-      name: "payload",
-      type: "simple*"
+      name: "payloads",
+      type: "buffer*"
     },{
       index: 1,
       name: "timestamp",
