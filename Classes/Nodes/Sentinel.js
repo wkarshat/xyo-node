@@ -2,6 +2,7 @@
 
 const debug = require("debug")("Sentinel"),
   Node = require("./Node.js"),
+  format = require('string-format'),
   XYODATA = require("../../xyodata.js");
 
 class Sentinel extends Node {
@@ -10,7 +11,6 @@ class Sentinel extends Node {
     debug("constructor");
 
     super(moniker, host, port, config);
-    this.entries = [];
     this.bridges = [];
   }
 
@@ -25,7 +25,7 @@ class Sentinel extends Node {
       if (!(sentinel.ports.pipe === this.ports.pipe && sentinel.host === this.host)) {
         this.addPeer(
           sentinel.host,
-          sentinel.ports.pipe
+          sentinel.ports
         );
       }
     }
@@ -46,6 +46,36 @@ class Sentinel extends Node {
     }
   }
 
+  onEntry(socket, entry) {
+    debug(format("onEntry: {}"));
+    let self = this;
+
+    super.onEntry(entry);
+    if (entry.p1signatures.length === 0) {
+      debug("onEntry: P1");
+      entry.p1Sign((payload) => {
+        return self.sign(payload);
+      }, () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+      });
+    } else if (entry.p2signatures.length === 0) {
+      debug("onEntry: P2");
+      entry.p2Sign((payload) => {
+        return self.sign(payload);
+      },
+      () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+      });
+    } else {
+      debug("onEntry: DONE");
+      this.addEntryToLedger(entry);
+    }
+  }
+
   addBridge(host, port) {
     debug("addBridge");
     this.bridges.push({ host: host, port: port });
@@ -56,9 +86,14 @@ class Sentinel extends Node {
     let peer = Math.floor(Math.random() * 10);
 
     if (peer < this.peers.length) {
-      let entry = new XYODATA.Entry();
+      let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
-      this.out(this.peers[peer], entry.toBuffer(XYODATA.BinOn));
+      entry.p2keys = [];
+      for (let i = 0; i < this.keys.length; i++) {
+        entry.p2keys.push(this.keys[i].public);
+      }
+      buffer = entry.toBuffer();
+      this.out(this.peers[peer], buffer);
     }
   }
 

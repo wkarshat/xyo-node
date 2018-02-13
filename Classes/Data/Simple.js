@@ -14,15 +14,16 @@ const debug = require("debug")("Simple"),
 
 class Simple extends Base {
 
-  constructor() {
+  constructor(binOn) {
     debug("constructor");
     super();
     this.type = 0x1001;
     this.map = "simple";
+    this.binOn = binOn;
   }
 
-  toBuffer(binOn) {
-    return binOn.objToBuffer(this, null, true);
+  toBuffer() {
+    return this.binOn.objToBuffer(this, null, true);
   }
 }
 

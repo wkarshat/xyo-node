@@ -5,9 +5,9 @@ const debug = require("debug")("Ledger"),
 
 class Ledger extends Complex {
 
-  constructor() {
+  constructor(binOn) {
     debug("constructor");
-    super();
+    super(binOn);
     this.type = 0x2004;
     this.map = "ledger";
     this.version = 1;

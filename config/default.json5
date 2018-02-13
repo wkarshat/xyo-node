@@ -212,6 +212,6 @@
       "./BinOn"
     ]
   },
-  testclasses: true,
-  clock: 10000
+  testdataclasses: true,
+  clock: 5000
 }

@@ -5,6 +5,7 @@ const debug = require('debug')('Node'),
   Express = require('express'),
   format = require('string-format'),
   CRYPTO = require('crypto'),
+  URSA = require('ursa'),
   NET = require('net'),
   XYODATA = require('../../xyodata.js');
 
@@ -18,20 +19,18 @@ class Node extends Base {
     self = this;
     this.moniker = moniker;
 
+    this.entries = [];
+
     this.host = host;
     this.ports = ports;
     this.app = Express();
     this.app.listen(ports.api);
     this.server = NET.createServer((socket) => {
-      debug('connected');
-      socket.on('data', (data) => {
-        self.in(data);
-      });
+      this.in(socket);
     });
     this.server.listen(ports.pipe);
     this.peers = [];
     this.config = config;
-    this.inData = null;
     this.keys = [];
     Node.fromMoniker[moniker] = this;
     Node.fromPort[ports.api] = this;
@@ -58,44 +57,87 @@ class Node extends Base {
     }
   }
 
-  in(buffer) {
-    debug(format('in: {}', buffer.length));
-    let object;
+  in(socket) {
+    debug('in');
+    let inData = null;
 
-    if (this.inData) {
-      this.inData = Buffer.concat([this.inData, buffer]);
-    } else {
-      this.inData = buffer;
-    }
+    socket.on('data', (buffer) => {
+      debug('in:data: {}', buffer.length);
+      let result;
 
-    object = XYODATA.BinOn.bufferToObj(this.inData, 0);
+      if (inData) {
+        inData = Buffer.concat([inData, buffer]);
+      } else {
+        inData = buffer;
+      }
 
-    if (object) {
-      debug(format('in: {}', JSON.stringify(object)));
-      this.inData = null;
-    }
+      result = XYODATA.BinOn.bufferToObj(inData, 0);
 
+      if (result.obj) {
+        let obj = result.obj;
+
+        switch (obj.map) {
+          case "entry":
+            this.onEntry(socket, obj);
+            break;
+          default:
+            break;
+        }
+        inData = null;
+      }
+    }).on('close', () => {
+      debug('in:close');
+    }).on('end', () => {
+      debug('in:end');
+    });
+  }
+
+  onEntry(socket, entry) {
+    debug(format('onEntry: {}', entry));
   }
 
   out(target, buffer) {
     debug(format('out: {},{},{}', target.host, target.port, buffer.length));
-    let socket = NET.createConnection(target.port, target.host);
+
+    let inData = null, socket = NET.createConnection(target.port, target.host);
 
     socket.on('data', (data) => {
-      debug('out:data: {}', data);
+      let result;
+
+      if (inData) {
+        inData = Buffer.concat([inData, data]);
+      } else {
+        inData = data;
+      }
+
+      result = XYODATA.BinOn.bufferToObj(inData, 0);
+
+      if (result.obj) {
+        let obj = result.obj;
+
+        switch (obj.map) {
+          case "entry":
+            this.onEntry(socket, obj);
+            break;
+          default:
+            break;
+        }
+        inData = null;
+      }
     }).on('connect', () => {
       debug('out:connect');
       socket.write(buffer);
-      socket.destroy();
     }).on('end', () => {
       debug('out:done');
+    }).on('error', (ex) => {
+      debug(format('error:{}', ex));
     });
   }
 
-  addPeer(host, port) {
-    debug(format('addPeer[{}, {}]', host, port));
-    if (!(this.host === host && this.ports.pipe === port)) {
-      this.peers.push({ host: host, port: port });
+  addPeer(host, ports) {
+    debug(format('addPeer[{}, {}]', host, ports.pipe));
+    if (!(this.host === host && this.ports.pipe === ports.pipe)) {
+      this.peers.push({ host: host, port: ports.pipe });
     }
   }
 
@@ -110,6 +152,11 @@ class Node extends Base {
     delete Base.fromPort[this.port];
   }
 
+  addEntryToLedger(entry) {
+    debug(format("addEntryToLedger: {}", entry));
+    this.entries.push(entry);
+  }
+
   initKeys(count) {
     debug('initKeys');
     this.keys = [];
@@ -120,26 +167,34 @@ class Node extends Base {
 
   generateKey() {
     debug('generateKey');
-    let diffHell = CRYPTO.createDiffieHellman(256);
+    let key = URSA.generatePrivateKey(1024, 65537);
 
+    debug(key.toPublicPem().toString().split('-----BEGIN PUBLIC KEY-----')[1].split('-----END PUBLIC KEY-----')[0].replace('\n', '').length);
     return {
       used: 0,
-      public: diffHell.generateKeys('base64'),
-      private: diffHell.getPrivateKey('base64')
+      publicPem: key.toPublicPem(),
+      public: key.toPublicPem().toString().split('-----BEGIN PUBLIC KEY-----')[1].split('-----END PUBLIC KEY-----')[0].replace('\n', ''),
+      privatePem: key.toPrivatePem(),
+      ssh: key.toPublicSsh()
     };
   }
 
   sign(payload) {
-    debug('sign');
-    let signatures = [];
+    debug(format('sign: {}', payload.length));
+    let keys = [], signature, signatures = [];
 
     for (let i = 0; i < this.keys.length; i++) {
+      // debug(format('sign: {},{}', i, this.keys[i].public.length));
       let signer = CRYPTO.createSign('SHA256');
 
-      signer.write(payload);
+      signer.update(payload);
       signer.end();
-      signatures.push(signer.sign(this.keys[i].key.private, 'hex'));
+      signature = signer.sign(this.keys[i].privatePem);
+      signatures.push(signature);
+      keys.push(this.keys[i].public);
+      debug(format('sign: {},{}', i, signatures[i].length));
     }
+    return { signatures: signatures, keys: keys };
   }
 
   getKeyUses(index) {
@@ -168,7 +223,10 @@ class Node extends Base {
       'peers': this.peers.length,
       'host': this.host,
       'port': this.port,
-      'config': this.config
+      'config': this.config,
+      'ledger': {
+        'entries': this.entries.length
+      }
     };
   }
 

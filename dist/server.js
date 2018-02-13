@@ -67,9 +67,9 @@ const initialize = (complete) => {
 
     XYO.Base.updateCount++;
 
-    for (key in XYO.fromPort) {
-      if (XYO.fromPort.hasOwnProperty(key)) {
-        XYO.fromPort[key].update(CONFIG);
+    for (key in XYO.fromMoniker) {
+      if (XYO.fromMoniker.hasOwnProperty(key)) {
+        XYO.fromMoniker[key].update(CONFIG);
       }
     }
   },

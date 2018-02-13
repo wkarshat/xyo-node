@@ -9,10 +9,10 @@ TestDataClasses.All = () => {
   debug("*      Testing Data Classes       *");
   debug("***********************************");
 
-  let simple = new XYODATA.Simple(),
-    complex = new XYODATA.Complex(),
-    entry = new XYODATA.Entry(),
-    ledger = new XYODATA.Ledger(),
+  let simple = new XYODATA.Simple(XYODATA.BinOn),
+    complex = new XYODATA.Complex(XYODATA.BinOn),
+    entry = new XYODATA.Entry(XYODATA.BinOn),
+    ledger = new XYODATA.Ledger(XYODATA.BinOn),
     b0, b1, b2, b3,
     res0, res1, res2, res3;
 

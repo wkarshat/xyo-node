@@ -13,9 +13,9 @@ const debug = require("debug")("Complex"),
 
 class Complex extends Simple {
 
-  constructor() {
+  constructor(binOn) {
     debug("constructor");
-    super();
+    super(binOn);
     this.type = 0x2001;
     this.version = 1;
     this.map = "complex";

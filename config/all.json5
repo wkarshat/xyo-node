@@ -27,5 +27,5 @@
       action: "launch"
     }
   },
-  testclasses: false
+  testdataclasses: false
 }
