@@ -1,9 +1,19 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Friday, February 2, 2018 12:17 PM
+ * @Email:  developer@xyfindables.com
+ * @Filename: Diviner.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 
 const debug = require("debug")("Diviner"),
   Node = require("./Node.js"),
   HTTP = require("http"),
-  IOCLIENT = require("socket.io-client"),
   format = require("string-format");
 
 class Diviner extends Node {
@@ -101,16 +111,11 @@ class Diviner extends Node {
     }
   }
 
-  addArchivist(host, port) {
+  addArchivist(host, ports) {
     debug("addArchivist");
-    let archivist = IOCLIENT.connect("{}:{}", host, port);
-
-    archivist.on("datarequests", (data) => {
-      debug(format("onDatarequests: {}"), data);
-    });
-
-    archivist.emit("datarequests", format("datarequests: hello[{},{}]", host, port));
-    this.archivists.push(archivist);
+    if (!(this.host === host && this.ports.pipe === ports.pipe)) {
+      this.archivists.push({ host: host, port: ports.pipe });
+    }
   }
 
   update(config) {

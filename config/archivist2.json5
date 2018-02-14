@@ -1,0 +1,8 @@
+{
+  archivists: {
+    xy2: {
+      action: "launch"
+    }
+  },
+  testdataclasses: false
+}

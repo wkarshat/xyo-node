@@ -1,3 +1,14 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Thursday, February 1, 2018 3:16 PM
+ * @Email:  developer@xyfindables.com
+ * @Filename: blockchain.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 
 const CryptoJS = require("crypto-js"),

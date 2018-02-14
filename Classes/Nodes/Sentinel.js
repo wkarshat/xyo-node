@@ -1,3 +1,14 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Friday, February 2, 2018 12:17 PM
+ * @Email:  developer@xyfindables.com
+ * @Filename: Sentinel.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 
 const debug = require("debug")("Sentinel"),
@@ -94,6 +105,9 @@ class Sentinel extends Node {
       for (let i = 0; i < this.keys.length; i++) {
         entry.p2keys.push(this.keys[i].public);
       }
+
+      entry.payloads.push(new XYODATA.Id(XYODATA.BinOn));
+
       buffer = entry.toBuffer();
       this.out(this.peers[peer], buffer);
     }

@@ -1,5 +1,6 @@
 {
   name: "id",
+  class: "Id",
   extends: "simple",
   type: 0x1003,
   fields: [{

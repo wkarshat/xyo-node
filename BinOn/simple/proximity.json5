@@ -1,12 +1,12 @@
 {
-  name: "distance", // in mm
-  class: "Distance",
+  name: "proximity",
+  class: "Proximity",
   extends: "simple",
   type: 0x1002,
   fields: [{
       index: 0,
       name: "value",
-      type: "uint256"
+      type: "uint256" //in meters with 16 places
     }
   ]
 }

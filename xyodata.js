@@ -1,3 +1,14 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Tuesday, February 6, 2018 10:45 AM
+ * @Email:  developer@xyfindables.com
+ * @Filename: xyodata.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:27 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 const debug = require("debug")("xyodata"),
   BINON = require("./binon.js"),
@@ -6,9 +17,10 @@ const debug = require("debug")("xyodata"),
 debug("loading...");
 
 XYODATA.Simple = require("./Classes/Data/Simple.js");
-XYODATA.Complex = require("./Classes/Data/Complex.js");
 XYODATA.Entry = require("./Classes/Data/Entry.js");
-XYODATA.Ledger = require("./Classes/Data/Ledger.js");
+XYODATA.Id = require("./Classes/Data/Id.js");
+XYODATA.Proximity = require("./Classes/Data/Proximity.js");
+XYODATA.Location = require("./Classes/Data/Location.js");
 
 XYODATA.BinOn = BINON.create({
   "simple": XYODATA.Simple,

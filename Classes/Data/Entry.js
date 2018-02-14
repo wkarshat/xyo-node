@@ -1,15 +1,26 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Friday, February 2, 2018 5:05 PM
+ * @Email:  developer@xyfindables.com
+ * @Filename: Entry.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 
 const debug = require("debug")("Entry"),
-  Complex = require("./Complex.js"),
+  Simple = require("./Simple.js"),
   bigInt = require("big-integer");
 
-class Entry extends Complex {
+class Entry extends Simple {
 
   constructor(binOn) {
     debug("constructor");
     super(binOn);
-    this.type = 0x2003;
+    this.type = 0x1005;
     this.map = "entry";
     this.version = 1;
     this.payloads = [];

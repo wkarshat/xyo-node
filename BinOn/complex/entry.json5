@@ -6,7 +6,7 @@
   fields: [{
       index: 0,
       name: "payloads",
-      type: "buffer*"
+      type: "simple*"
     },{
       index: 1,
       name: "timestamp",

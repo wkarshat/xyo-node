@@ -1,3 +1,14 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Tuesday, February 6, 2018 10:07 AM
+ * @Email:  developer@xyfindables.com
+ * @Filename: Simple.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 
 const debug = require("debug")("Simple"),
@@ -6,10 +17,11 @@ const debug = require("debug")("Simple"),
 /* Types */
 /* =============
 0x1001 = Simple
-0x1002 = Distance
+0x1002 = Proximity
 0x1003 = Id
-0x1004 = Signature
-0x1005 = Address
+0x1004 = Location
+0x1005 = Entry
+
 ================ */
 
 class Simple extends Base {
@@ -18,6 +30,7 @@ class Simple extends Base {
     debug("constructor");
     super();
     this.type = 0x1001;
+    this.version = 1;
     this.map = "simple";
     this.binOn = binOn;
   }

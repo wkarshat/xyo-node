@@ -1,3 +1,14 @@
+/**
+ * @Author: XY | The Findables Company <arietrouw>
+ * @Date:   Saturday, July 18, 2015 11:24 PM
+ * @Email:  developer@xyfindables.com
+ * @Filename: server.js
+ * @Last modified by:   arietrouw
+ * @Last modified time: Wednesday, February 14, 2018 11:27 AM
+ * @License: All Rights Reserved
+ * @Copyright: Copyright XY | The Findables Company
+ */
+
 "use strict";
 let debug = require("debug")("server"),
   XYO = require("./xyo.js"),
