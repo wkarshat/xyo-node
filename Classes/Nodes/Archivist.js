@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Archivist.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Wednesday, February 14, 2018 11:56 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -24,29 +24,31 @@ class Archivist extends Node {
     this.entriesByKey = {};
   }
 
-  /* get(req, res) {
+  get(req, res) {
     debug("get");
-    let parts = req.path.split("/"),
-      id = null;
+    let contentType = req.headers['content-type'],
+      pathParts = req.path.split("/");
 
-    if (parts.length > 1) {
-      id = parts[1];
-    }
+    if (contentType && pathParts.length > 1) {
+      let action = pathParts[1];
 
-    if (id != null && id.length > 0) {
-      let entries = this.entriesByKey[id];
+      switch (contentType) {
+        case 'application/json':
+          switch (action) {
+            case "entries":
+              return this.returnJSONEntries(req, res);
 
-      if (entries) {
-        return res.send({
-          "id": id,
-          "entries": this.entriesByKey[id]
-        });
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
       }
-      return res.status(404).send(format("({}) Not Found", id));
     }
 
     return super.get(req, res);
-  } */
+  }
 
   post(req, res) {
     debug("post");
@@ -194,6 +196,33 @@ class Archivist extends Node {
 
     return status;
   }
+
+  returnJSONEntries(req, res) {
+    debug('returnJSONItems');
+    let pathParts = req.path.split("/"), id = null;
+
+    if (pathParts.length > 2) {
+      id = pathParts[2];
+    }
+
+    if (id && id.length > 0) {
+      let entries = this.entriesByKey[id];
+
+      if (entries) {
+        return res.send({
+          "id": id,
+          "entries": this.entriesByKey[id]
+        });
+      }
+      return res.status(404).send(format("({}) Not Found", id));
+    } else {
+      return res.send({
+        "entries": this.entriesByKey
+      });
+    }
+
+  }
+
 }
 
 module.exports = Archivist;

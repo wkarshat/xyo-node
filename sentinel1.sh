@@ -3,11 +3,11 @@
 # @Email:  developer@xyfindables.com
 # @Filename: sentinel1.sh
 # @Last modified by:   arietrouw
-# @Last modified time: Wednesday, February 14, 2018 11:27 AM
+# @Last modified time: Wednesday, February 14, 2018 1:46 PM
 # @License: All Rights Reserved
 # @Copyright: Copyright XY | The Findables Company
 
 
 
 export NODE_ENV=sentinel1
-gulp
+gulp inspect

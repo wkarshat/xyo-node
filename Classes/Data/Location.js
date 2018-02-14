@@ -4,12 +4,10 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Location.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @Last modified time: Wednesday, February 14, 2018 1:55 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
-
-
 
 'use strict';
 

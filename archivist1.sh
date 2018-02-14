@@ -3,11 +3,11 @@
 # @Email:  developer@xyfindables.com
 # @Filename: archivist1.sh
 # @Last modified by:   arietrouw
-# @Last modified time: Wednesday, February 14, 2018 11:26 AM
+# @Last modified time: Wednesday, February 14, 2018 1:46 PM
 # @License: All Rights Reserved
 # @Copyright: Copyright XY | The Findables Company
 
 
 
 export NODE_ENV=archivist1
-gulp inspect
+gulp

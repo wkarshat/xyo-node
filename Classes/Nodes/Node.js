@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Wednesday, February 14, 2018 2:07 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -50,10 +50,34 @@ class Node extends Base {
     this.app.get('*', (req, res) => {
       self.get(req, res);
     });
+    this.app.post('*', (req, res) => {
+      self.post(req, res);
+    });
   }
 
   get(req, res) {
     debug('get');
+    let contentType = req.headers['content-type'];
+
+    if (!contentType) {
+      return res.status(415).send(req.path);
+    } else {
+      switch (contentType) {
+        case 'application/json':
+          switch (req.path) {
+            case "/status":
+              return this.returnJSONStatus(req, res);
+            default:
+              return res.status(404).send(format("({}) Not Found", req.path));
+          }
+        default:
+          return res.status(415).send(req.path);
+      }
+    }
+  }
+
+  post(req, res) {
+    debug('post');
     let contentType = req.headers['content-type'];
 
     if (!contentType) {
@@ -83,7 +107,6 @@ class Node extends Base {
       }
 
       result = XYODATA.BinOn.bufferToObj(inData, 0);
-
       if (result.obj) {
         let obj = result.obj;
 
@@ -95,6 +118,8 @@ class Node extends Base {
             break;
         }
         inData = null;
+      } else {
+        debug('in:noobj');
       }
     }).on('close', () => {
       debug('in:close');
