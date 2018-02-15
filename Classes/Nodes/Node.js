@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 5:42 PM
+ * @Last modified time: Wednesday, February 14, 2018 7:02 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -193,7 +193,48 @@ class Node extends Base {
 
   addEntryToLedger(entry) {
     debug(format("addEntryToLedger: {}", entry));
+    if (this.entries.length > 0) {
+      this.signHeadAndTail(this.entries[this.entries.length - 1]);
+    }
     this.entries.push(entry);
+  }
+
+  signHeadAndTail(entry) {
+    let payload, headKeys = this.keys;
+
+    this.spinKeys();
+
+    entry.headkeys = this.publicKeysFromKeys(headKeys);
+    entry.tailkeys = this.publicKeysFromKeys(this.keys);
+
+    payload = entry.toBuffer();
+
+    this.signHead(entry, payload, headKeys);
+    this.signTail(entry, payload, this.keys);
+  }
+
+  signHead(entry, payload, keys) {
+    let result;
+
+    result = this.sign(payload, keys);
+    this.headSignatures = result.signatures;
+  }
+
+  signTail(entry, payload, keys) {
+    let result;
+
+    result = this.sign(payload, keys);
+    this.tailSignatures = result.signatures;
+  }
+
+  publicKeysFromKeys(keys) {
+    let publicKeys = [];
+
+    for (let i = 0; i < keys.length; i++) {
+      publicKeys.push(keys[i].public);
+    }
+
+    return publicKeys;
   }
 
   initKeys(count) {
@@ -218,20 +259,20 @@ class Node extends Base {
     };
   }
 
-  sign(payload) {
+  sign(payload, signingKeys) {
     debug(format('sign: {}', payload.length));
-    let keys = [], signature, signatures = [];
+    let keys = [], signature, signatures = [], signKeys = signingKeys || this.keys;
 
-    for (let i = 0; i < this.keys.length; i++) {
+    for (let i = 0; i < signKeys.length; i++) {
       // debug(format('sign: {},{}', i, this.keys[i].public.length));
       let signer = CRYPTO.createSign('SHA256');
 
       signer.update(payload);
       signer.end();
-      signature = signer.sign(this.keys[i].privatePem).toString('hex');
+      signature = signer.sign(signKeys[i].privatePem).toString('hex');
       // debug(format('SIGLEN: {}', signature.length));
       signatures.push(signature);
-      keys.push(this.keys[i].public);
+      keys.push(signKeys[i].public);
       // debug(format('sign: {},{}', i, signatures[i].length));
     }
     return { signatures: signatures, keys: keys };
@@ -250,7 +291,7 @@ class Node extends Base {
 
       key.used += 1;
       if (key.used > this.getKeyUses(i)) {
-        this.addKey(key);
+        this.keys[i] = this.generateKey();
       }
     }
   }
