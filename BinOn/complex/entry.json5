@@ -35,5 +35,21 @@
       index: 7,
       name: "p1signatures",
       type: "signature*"
+    },{
+      index: 8,
+      name: "headKeys",
+      type: "address*"
+    },{
+      index: 9,
+      name: "tailKeys",
+      type: "address*"
+    },{
+      index: 10,
+      name: "headSignatures",
+      type: "signature*"
+    },{
+      index: 11,
+      name: "tailSignatures",
+      type: "signature*"
     }]
 }

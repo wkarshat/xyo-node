@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Entry.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 6:12 PM
+ * @Last modified time: Thursday, February 15, 2018 8:56 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -33,11 +33,11 @@ class Entry extends Simple {
 
     this.p2signatures = [];
 
-    this.headkeys = [];
-    this.tailkeys = [];
-    
-    this.headsignatures = [];
-    this.tailsignatures = [];
+    this.headKeys = [];
+    this.tailKeys = [];
+
+    this.headSignatures = [];
+    this.tailSignatures = [];
   }
 
   p1Sign(signer, callback) {

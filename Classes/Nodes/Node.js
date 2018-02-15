@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 7:02 PM
+ * @Last modified time: Thursday, February 15, 2018 10:49 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -192,7 +192,7 @@ class Node extends Base {
   }
 
   addEntryToLedger(entry) {
-    debug(format("addEntryToLedger: {}", entry));
+    debug("addEntryToLedger");
     if (this.entries.length > 0) {
       this.signHeadAndTail(this.entries[this.entries.length - 1]);
     }
@@ -200,12 +200,13 @@ class Node extends Base {
   }
 
   signHeadAndTail(entry) {
-    let payload, headKeys = this.keys;
+    debug("signHeadAndTail");
+    let payload, headKeys = this.keys.slice(0);
 
     this.spinKeys();
 
-    entry.headkeys = this.publicKeysFromKeys(headKeys);
-    entry.tailkeys = this.publicKeysFromKeys(this.keys);
+    entry.headKeys = this.publicKeysFromKeys(headKeys);
+    entry.tailKeys = this.publicKeysFromKeys(this.keys);
 
     payload = entry.toBuffer();
 
@@ -214,17 +215,19 @@ class Node extends Base {
   }
 
   signHead(entry, payload, keys) {
+    debug("signHead");
     let result;
 
     result = this.sign(payload, keys);
-    this.headSignatures = result.signatures;
+    entry.headSignatures = result.signatures;
   }
 
   signTail(entry, payload, keys) {
+    debug("signTail");
     let result;
 
     result = this.sign(payload, keys);
-    this.tailSignatures = result.signatures;
+    entry.tailSignatures = result.signatures;
   }
 
   publicKeysFromKeys(keys) {
@@ -260,7 +263,7 @@ class Node extends Base {
   }
 
   sign(payload, signingKeys) {
-    debug(format('sign: {}', payload.length));
+    debug('sign:');
     let keys = [], signature, signatures = [], signKeys = signingKeys || this.keys;
 
     for (let i = 0; i < signKeys.length; i++) {
@@ -290,7 +293,7 @@ class Node extends Base {
       let key = this.keys[i];
 
       key.used += 1;
-      if (key.used > this.getKeyUses(i)) {
+      if (key.used >= this.getKeyUses(i)) {
         this.keys[i] = this.generateKey();
       }
     }
