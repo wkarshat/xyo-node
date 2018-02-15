@@ -4,15 +4,14 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Simple.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @Last modified time: Wednesday, February 14, 2018 6:04 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 "use strict";
 
-const debug = require("debug")("Simple"),
-  Base = require("../Base.js");
+const Base = require("../Base.js");
 
 /* Types */
 /* =============
@@ -27,7 +26,6 @@ const debug = require("debug")("Simple"),
 class Simple extends Base {
 
   constructor(binOn) {
-    debug("constructor");
     super();
     this.type = 0x1001;
     this.version = 1;

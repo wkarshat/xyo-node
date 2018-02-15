@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Entry.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @Last modified time: Wednesday, February 14, 2018 6:02 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -18,7 +18,7 @@ const debug = require("debug")("Entry"),
 class Entry extends Simple {
 
   constructor(binOn) {
-    debug("constructor");
+    // debug("constructor");
     super(binOn);
     this.type = 0x1005;
     this.map = "entry";

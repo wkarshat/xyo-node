@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Archivist.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:56 AM
+ * @Last modified time: Wednesday, February 14, 2018 4:11 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -52,7 +52,9 @@ class Archivist extends Node {
 
   post(req, res) {
     debug("post");
-    let action = req.body.action;
+    let action;
+
+    action = req.body.action;
 
     switch (action) {
       case "add":
@@ -216,8 +218,14 @@ class Archivist extends Node {
       }
       return res.status(404).send(format("({}) Not Found", id));
     } else {
+      let results = [];
+
+      for (let i = 0; i < this.entries.length && i < 50; i++) {
+        results.push(this.entries[i]);
+      }
+
       return res.send({
-        "entries": this.entriesByKey
+        "entries": results
       });
     }
 

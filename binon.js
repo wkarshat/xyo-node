@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: binon.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Wednesday, February 14, 2018 6:05 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -22,7 +22,7 @@ const debug = require('debug')('BinOn'),
 class BinOn {
 
   constructor(classMap, defaultObjectName) {
-    debug('constructor');
+    // debug('constructor');
     if (typeof classMap != 'object') {
       throw new Error(format('BinOn requires a class map for construction[{}]', typeof classMap));
     }
@@ -218,24 +218,31 @@ class BinOn {
           break;
         case 'signature':
           if (isNative) {
-            obj = buffer.slice(currentOffset, currentOffset + 128);
+            obj = buffer.slice(currentOffset, currentOffset + 128).toString('hex');
+            if (obj.length !== 256) {
+              throw new Error(format('Failed to read 128 bytes for signature: ', obj.length));
+            }
           } else {
-            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 128);
-          }
-          if (obj.length !== 128) {
-            throw new Error('Failed to read 128 bytes for signature');
+            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 128).toString('hex');
+            if (obj[activeMap.fields[i].name].length !== 256) {
+              throw new Error(format('Failed to read 128 bytes for signature: {}', obj.length));
+            }
           }
           currentOffset += 128;
           break;
         case 'address':
           if (isNative) {
             obj = buffer.slice(currentOffset, currentOffset + 220).toString();
+            if (obj.length !== 220) {
+              throw new Error(format('Failed to read 220 bytes for address: {}', obj.length));
+            }
           } else {
             obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 220).toString();
+            if (obj[activeMap.fields[i].name].length !== 220) {
+              throw new Error(format('Failed to read 220 bytes for address: {}', obj.length));
+            }
           }
-          if (obj.length !== 220) {
-            throw new Error('Failed to read 220 bytes for address');
-          }
+
           currentOffset += 220;
           break;
         default: // these are custom types
@@ -269,14 +276,14 @@ class BinOn {
   }
 
   jsonToBuffer(json) {
-    // debug('jsonToBuffer');
+    debug('jsonToBuffer');
     let obj = JSON.parse(json);
 
     return this.objToBuffer(obj);
   }
 
   json5ToBuffer(json5) {
-    // debug('json5ToBuffer');
+    debug('json5ToBuffer');
     let obj = JSON.parse(json5);
 
     return this.objToBuffer(obj);
@@ -422,31 +429,33 @@ class BinOn {
           break;
         case 'signature':
           if (isNative) {
-            if (obj.length !== 128) {
-              throw new Error(format('Signatures must be 128 Bytes [{}]', obj));
+            if (obj.length !== 256) {
+              throw new Error(format('Signature must be 256 Bytes [{}]', obj.length));
             }
-            buf = obj;
+            buf = new Buffer(obj, 'hex');
           } else {
-            if (obj[activeMap.fields[i].name].length !== 128) {
-              throw new Error(format('Signatures must be 128 Bytes [{}]', obj));
+            if (obj[activeMap.fields[i].name].length !== 256) {
+              throw new Error(format('Signature must be 256 Bytes [{}]', obj.length));
             }
-            buf = obj[activeMap.fields[i].name];
+            buf = new Buffer(obj[activeMap.fields[i].name], 'hex');
           }
+          // debug('signature: ', buf.length);
           buffers.push(buf);
           break;
         case 'address':
           buf = Buffer.alloc(220);
           if (isNative) {
             if (obj.length !== 220) {
-              throw new Error(format('Signatures must be 220 Bytes [{}]', obj));
+              throw new Error(format('Address must be 220 Bytes [{}]', obj.length));
             }
             buf.write(obj);
           } else {
             if (obj[activeMap.fields[i].name].length !== 220) {
-              throw new Error(format('Signatures must be 220 Bytes [{}]', obj));
+              throw new Error(format('Address must be 220 Bytes [{}]', obj.length));
             }
             buf.write(obj[activeMap.fields[i].name]);
           }
+          // debug('address: ', buf.length);
           buffers.push(buf);
           break;
         default: // these are custom types

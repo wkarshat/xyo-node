@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Bridge.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Wednesday, February 14, 2018 3:15 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -125,6 +125,7 @@ class Bridge extends Node {
     let archivist = Math.floor(Math.random() * 10);
 
     if (archivist < this.archivists.length) {
+      archivist = 0; // use only 1 archivist for now
       let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
       for (let i = 0; i < maxEntries && i < this.entries.length; i++) {

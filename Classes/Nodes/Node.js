@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 2:07 PM
+ * @Last modified time: Wednesday, February 14, 2018 5:42 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -51,6 +51,9 @@ class Node extends Base {
       self.get(req, res);
     });
     this.app.post('*', (req, res) => {
+      if (!(req.body)) {
+        return res.status(400).send("Empty body not allowed");
+      }
       self.post(req, res);
     });
   }
@@ -225,10 +228,11 @@ class Node extends Base {
 
       signer.update(payload);
       signer.end();
-      signature = signer.sign(this.keys[i].privatePem);
+      signature = signer.sign(this.keys[i].privatePem).toString('hex');
+      // debug(format('SIGLEN: {}', signature.length));
       signatures.push(signature);
       keys.push(this.keys[i].public);
-      debug(format('sign: {},{}', i, signatures[i].length));
+      // debug(format('sign: {},{}', i, signatures[i].length));
     }
     return { signatures: signatures, keys: keys };
   }

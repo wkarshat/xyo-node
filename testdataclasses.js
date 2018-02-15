@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: testdataclasses.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 2:01 PM
+ * @Last modified time: Wednesday, February 14, 2018 2:54 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -55,7 +55,7 @@ TestDataClasses.All = () => {
   res0 = XYODATA.BinOn.bufferToObj(b0, 0);
   debug(JSON.stringify(res0.obj));
 
-  debug("* ===== B2O Testing 'entry' ===== *");
+  debug("* ===== B2O Testing 'entry' ===== * ", b2.length);
   res2 = XYODATA.BinOn.bufferToObj(b2, 0);
   debug(JSON.stringify(res2.obj));
 
