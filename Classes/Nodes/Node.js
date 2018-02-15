@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 10:49 AM
+ * @Last modified time: Thursday, February 15, 2018 2:16 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -14,6 +14,7 @@
 const debug = require('debug')('Node'),
   Base = require('../Base'),
   Express = require('express'),
+  bodyParser = require('body-parser'),
   format = require('string-format'),
   CRYPTO = require('crypto'),
   URSA = require('ursa'),
@@ -50,6 +51,7 @@ class Node extends Base {
     this.app.get('*', (req, res) => {
       self.get(req, res);
     });
+    this.app.use(bodyParser.json());
     this.app.post('*', (req, res) => {
       if (!(req.body)) {
         return res.status(400).send("Empty body not allowed");
@@ -60,16 +62,19 @@ class Node extends Base {
 
   get(req, res) {
     debug('get');
-    let contentType = req.headers['content-type'];
+    let contentType = req.headers['content-type'],
+      pathParts = req.path.split("/");
 
-    if (!contentType) {
-      return res.status(415).send(req.path);
-    } else {
+    if (contentType && pathParts.length > 1) {
+      let action = pathParts[1];
+
       switch (contentType) {
         case 'application/json':
-          switch (req.path) {
-            case "/status":
+          switch (action) {
+            case "status":
               return this.returnJSONStatus(req, res);
+            case "entries":
+              return this.returnJSONEntries(req, res);
             default:
               return res.status(404).send(format("({}) Not Found", req.path));
           }
@@ -77,6 +82,7 @@ class Node extends Base {
           return res.status(415).send(req.path);
       }
     }
+    return res.status(404).send(req.path);
   }
 
   post(req, res) {
@@ -132,7 +138,33 @@ class Node extends Base {
   }
 
   onEntry(socket, entry) {
-    debug(format('onEntry: {}', entry));
+    debug(format("onEntry: {}"));
+    let self = this;
+
+    if (entry.p1signatures.length === 0) {
+      debug("onEntry: P1");
+      entry.p1Sign((payload) => {
+        return self.sign(payload);
+      }, () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+      });
+    } else if (entry.p2signatures.length === 0) {
+      debug("onEntry: P2");
+      entry.p2Sign((payload) => {
+        return self.sign(payload);
+      },
+      () => {
+        let buffer = entry.toBuffer();
+
+        socket.write(buffer);
+        this.addEntryToLedger(entry);
+      });
+    } else {
+      debug("onEntry: DONE");
+      this.addEntryToLedger(entry);
+    }
   }
 
   out(target, buffer) {
@@ -318,6 +350,38 @@ class Node extends Base {
   returnJSONStatus(req, res) {
     debug('returnJSONStatus');
     res.status(200).send(JSON.stringify(this.status()));
+  }
+
+  returnJSONEntries(req, res) {
+    debug('returnJSONItems');
+    let pathParts = req.path.split("/"), id = null;
+
+    if (pathParts.length > 2) {
+      id = pathParts[2];
+    }
+
+    if (id && id.length > 0) {
+      let entries = [this.entriesByP1Key[id], this.entriesByP2Key[id], this.entriesByHeadKey[id], this.entriesByTailKey[id]];
+
+      if (entries) {
+        return res.send({
+          "id": id,
+          "entries": this.entriesByKey[id]
+        });
+      }
+      return res.status(404).send(format("({}) Not Found", id));
+    } else {
+      let results = [];
+
+      for (let i = 0; i < this.entries.length && i < 50; i++) {
+        results.push(this.entries[i]);
+      }
+
+      return res.send({
+        "entries": results
+      });
+    }
+
   }
 }
 

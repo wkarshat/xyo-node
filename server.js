@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: server.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:27 AM
+ * @Last modified time: Thursday, February 15, 2018 1:57 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -111,6 +111,7 @@ app.post("/mineBlock", (req, res) => {
 }); */
 
 initialize(() => {
+  debug('initialize: ', process.title);
   XYODATA.BinOn.loadMaps(null, () => {
     if (CONFIG.testdataclasses) {
       TESTDATACLASSES.All();

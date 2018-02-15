@@ -4,184 +4,90 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Archivist.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 4:11 PM
+ * @Last modified time: Thursday, February 15, 2018 2:26 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
-"use strict";
+'use strict';
 
-const debug = require("debug")("Archivist"),
-  Node = require("./Node.js"),
-  format = require("string-format");
+const debug = require('debug')('Archivist'),
+  Node = require('./Node.js');
 
 class Archivist extends Node {
 
   constructor(moniker, host, ports, config) {
-    debug("constructor");
+    debug('constructor');
+
+    process.title = 'XYO-Archivist';
 
     super(moniker, host, ports, config);
-    this.entriesByKey = {};
+    this.entriesByP1Key = {};
+    this.entriesByP2Key = {};
+    this.entriesByHeadKey = {};
+    this.entriesByTailKey = {};
   }
 
   get(req, res) {
-    debug("get");
-    let contentType = req.headers['content-type'],
-      pathParts = req.path.split("/");
-
-    if (contentType && pathParts.length > 1) {
-      let action = pathParts[1];
-
-      switch (contentType) {
-        case 'application/json':
-          switch (action) {
-            case "entries":
-              return this.returnJSONEntries(req, res);
-
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-    }
-
+    debug('get');
     return super.get(req, res);
   }
 
   post(req, res) {
-    debug("post");
-    let action;
+    debug('post');
+    let action, entries;
 
     action = req.body.action;
 
     switch (action) {
-      case "add":
-        if (req.body.entries) {
-          this.addEntriesToDatabase(req.body.entries);
-          res.status(201);
-          return res.send({
-            "entriesAdded": req.body.entries.length,
-            "totalEntries": this.entries.length
-          });
-        } else if (req.body.payloads) {
-          this.addPayloadsToDatabase(req.body.payloads);
-          res.status(201);
-          return res.send({
-            "entriesAdded": req.body.payloads.length,
-            "totalEntries": this.entries.length
-          });
-        }
-        break;
-      case "find":
-        if (req.body.epoch) {
-          let entries = this.find(req.body.keys, req.body.max, req.body.epoch);
-
-          res.status(200);
-          return res.send({
-            "entriesFound": Object.keys(entries).length,
-            "entries": entries
-          });
-        } else {
-          let entries = this.find(req.body.keys, req.body.max);
-
-          res.status(200);
-          return res.send({
-            "entriesFound": Object.keys(entries).length,
-            "entries": entries
-          });
-        }
+      case 'find':
+        entries = this.find(req.body);
+        return res.status(200).send({ count: Object.keys(entries).length, entries: entries });
       default:
         break;
     }
     return super.post(req, res);
   }
 
-  find(keys, max, epoch, entries) {
-    debug("find");
+  find(config, entries) {
+    debug('find');
     let entryList = entries || {};
 
-    keys.forEach((key) => {
-      let entry = this.entriesByKey[key];
+    config.keys.forEach((key) => {
+      let entry = this.entriesByP1Key[key];
 
-      if (entry && !(key in entries)) {
+      if (entry && !(key in entryList)) {
         entryList[key] = entry;
-        if (entry.pk1 === key) {
-          entryList = this.find([entry.pk2], max, epoch, entryList);
-        } else {
-          entryList = this.find([entry.pk1], max, epoch, entryList);
-        }
+        entryList = this.find({ epoch: config.epoch, max: config.max, keys: entry.p1keys.concat(entry.p2keys) }, entryList);
+      }
+
+      entry = this.entriesByP2Key[key];
+
+      if (entry && !(key in entryList)) {
+        entryList[key] = entry;
+        entryList = this.find({ epoch: config.epoch, max: config.max, keys: entry.p1keys.concat(entry.p2keys) }, entryList);
+      }
+
+      entry = this.entriesByTailKey[key];
+
+      if (entry && !(key in entryList)) {
+        entryList[key] = entry;
+        entryList = this.find({ epoch: config.epoch, max: config.max, keys: entry.p1keys.concat(entry.p2keys) }, entryList);
+      }
+
+      entry = this.entriesByHeadKey[key];
+
+      if (entry && !(key in entryList)) {
+        entryList[key] = entry;
+        entryList = this.find({ epoch: config.epoch, max: config.max, keys: entry.p1keys.concat(entry.p2keys) }, entryList);
       }
     });
 
     return entryList;
   }
 
-  onEntry(socket, entry) {
-    debug(format("onEntry: {}"));
-    let self = this;
-
-    super.onEntry(entry);
-    if (entry.p1signatures.length === 0) {
-      debug("onEntry: P1");
-      entry.p1Sign((payload) => {
-        return self.sign(payload);
-      }, () => {
-        let buffer = entry.toBuffer();
-
-        socket.write(buffer);
-      });
-    } else if (entry.p2signatures.length === 0) {
-      debug("onEntry: P2");
-      entry.p2Sign((payload) => {
-        return self.sign(payload);
-      },
-      () => {
-        let buffer = entry.toBuffer();
-
-        socket.write(buffer);
-      });
-    } else {
-      debug("onEntry: DONE");
-      this.addEntryToLedger(entry);
-    }
-  }
-
-  addEntriesToDatabase(entries) {
-    debug("addEntriesToDatabase");
-    entries.forEach((entry) => {
-      let pk1Entries = this.entriesByKey[entry.pk1] || [],
-        pk2Entries = this.entriesByKey[entry.pk2] || [];
-
-      this.entriesByKey[entry.pk1] = pk1Entries;
-      this.entriesByKey[entry.pk2] = pk2Entries;
-
-      this.entries.push(entry);
-      pk1Entries.push(entry);
-      pk2Entries.push(entry);
-    });
-  }
-
-  addPayloadsToDatabase(payloads) {
-    debug("addPayloadsToDatabase");
-    let entries = [];
-
-    payloads.forEach((payload) => {
-      entries.push(this.payload2Entry(payload));
-    });
-
-    this.addEntriesToDatabase(entries);
-  }
-
-  payload2Entry(payload) {
-    return {
-      "data": Buffer.from(payload).toString("base64")
-    };
-  }
-
   findPeers(archivists) {
-    debug(format("findPeers: {}", JSON.stringify(this.config)));
+    debug('findPeers');
     let key;
 
     for (key in archivists) {
@@ -191,44 +97,64 @@ class Archivist extends Node {
     }
   }
 
+  addEntryToLedger(entry) {
+    debug('addEntryToLedger');
+
+    if (entry.p1keys.length === 0) {
+      throw new Error('Trying to add entry to ledger without P1 keys');
+    }
+    if (entry.p1signatures.length === 0) {
+      throw new Error('Trying to add entry to ledger without P1 signatures');
+    }
+    if (entry.p2keys.length === 0) {
+      throw new Error('Trying to add entry to ledger without P2 keys');
+    }
+    if (entry.p2signatures.length === 0) {
+      throw new Error('Trying to add entry to ledger without P2 signatures');
+    }
+
+    super.addEntryToLedger(entry);
+    entry.p1keys.forEach((key) => {
+      this.entriesByP1Key[key] = entry;
+    });
+    entry.p2keys.forEach((key) => {
+      this.entriesByP2Key[key] = entry;
+    });
+  }
+
+  signHeadAndTail(entry) {
+    debug('signHeadAndTail');
+
+    super.signHeadAndTail(entry);
+
+    if (entry.headKeys.length === 0) {
+      throw new Error('Trying to index entry without Head keys');
+    }
+    if (entry.headSignatures.length === 0) {
+      throw new Error('Trying to index entry without Head signatures');
+    }
+    if (entry.p2keys.length === 0) {
+      throw new Error('Trying to index entry without Tail keys');
+    }
+    if (entry.p2signatures.length === 0) {
+      throw new Error('Trying to index entry without Tail signatures');
+    }
+
+    entry.headKeys.forEach((key) => {
+      this.entriesByHeadKey[key] = entry;
+    });
+    entry.tailKeys.forEach((key) => {
+      this.entriesByTailKey[key] = entry;
+    });
+  }
+
   status() {
     let status = super.status();
 
-    status.type = "Archivist";
+    status.type = 'Archivist';
+    status.entriesByKey = Object.keys(this.entriesByKey).length;
 
     return status;
-  }
-
-  returnJSONEntries(req, res) {
-    debug('returnJSONItems');
-    let pathParts = req.path.split("/"), id = null;
-
-    if (pathParts.length > 2) {
-      id = pathParts[2];
-    }
-
-    if (id && id.length > 0) {
-      let entries = this.entriesByKey[id];
-
-      if (entries) {
-        return res.send({
-          "id": id,
-          "entries": this.entriesByKey[id]
-        });
-      }
-      return res.status(404).send(format("({}) Not Found", id));
-    } else {
-      let results = [];
-
-      for (let i = 0; i < this.entries.length && i < 50; i++) {
-        results.push(this.entries[i]);
-      }
-
-      return res.send({
-        "entries": results
-      });
-    }
-
   }
 
 }

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Thursday, February 15, 2018 2:03 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -20,6 +20,7 @@ class Diviner extends Node {
 
   constructor(moniker, host, ports, config) {
     debug("constructor");
+    process.title = "XYO-Diviner";
     super(moniker, host, ports, config);
     this.archivists = [];
   }

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: gulpfile.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:26 AM
+ * @Last modified time: Thursday, February 15, 2018 11:21 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -30,7 +30,7 @@ gulp.task('nodemon-inspect', (cb) => {
 
   env({
     vars: {
-      DEBUG: "*,-socket.io*,-engine*,-express*,-snapdragon*"
+      DEBUG: "*,-socket.io*,-engine*,-express*,-snapdragon*,-body-parser*"
     }
   });
 

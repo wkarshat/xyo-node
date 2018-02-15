@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Sentinel.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 2:54 PM
+ * @Last modified time: Thursday, February 15, 2018 2:04 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -13,13 +13,14 @@
 
 const debug = require("debug")("Sentinel"),
   Node = require("./Node.js"),
-  format = require('string-format'),
   XYODATA = require("../../xyodata.js");
 
 class Sentinel extends Node {
 
   constructor(moniker, host, ports, config) {
     debug("constructor");
+
+    process.title = "XYO-Sentinel";
 
     super(moniker, host, ports, config);
     this.bridges = [];
@@ -54,36 +55,6 @@ class Sentinel extends Node {
         bridge.host,
         bridge.ports
       );
-    }
-  }
-
-  onEntry(socket, entry) {
-    debug(format("onEntry: {}"));
-    let self = this;
-
-    super.onEntry(entry);
-    if (entry.p1signatures.length === 0) {
-      debug("onEntry: P1");
-      entry.p1Sign((payload) => {
-        return self.sign(payload);
-      }, () => {
-        let buffer = entry.toBuffer();
-
-        socket.write(buffer);
-      });
-    } else if (entry.p2signatures.length === 0) {
-      debug("onEntry: P2");
-      entry.p2Sign((payload) => {
-        return self.sign(payload);
-      },
-      () => {
-        let buffer = entry.toBuffer();
-
-        socket.write(buffer);
-      });
-    } else {
-      debug("onEntry: DONE");
-      this.addEntryToLedger(entry);
     }
   }
 
