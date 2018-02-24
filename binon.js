@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: binon.js
  * @Last modified by:   arietrouw
- * @Last modified time: Friday, February 23, 2018 3:49 PM
+ * @Last modified time: Saturday, February 24, 2018 9:17 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -110,7 +110,7 @@ class BinOn {
   }
 
   bufferToObj(buffer, offset, target, map, isNative) {
-    // debug('bufferToObj');
+    debug('bufferToObj');
     let parts, length, activeMap, obj, currentOffset;
 
     activeMap = this.maps[map || this.getMapFromBuffer(buffer)];
@@ -140,7 +140,7 @@ class BinOn {
     }
 
     for (let i = 0; i < activeMap.fields.length; i++) {
-      // debug(format('{}:{}', activeMap.fields[i].name, currentOffset));
+      debug(format('{}:{}', activeMap.fields[i].name, currentOffset));
       switch (activeMap.fields[i].type) {
         case 'uint8':
           if (isNative) {
@@ -148,6 +148,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readUInt8(currentOffset);
           }
+          debug(format('uint8: {}', obj));
           currentOffset += 1;
           break;
         case 'uint16':
@@ -156,6 +157,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readUInt16BE(currentOffset);
           }
+          debug(format('uint16: {}', obj));
           currentOffset += 2;
           break;
         case 'uint32':
@@ -164,6 +166,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readUInt32BE(currentOffset);
           }
+          debug(format('uint32: {}', obj));
           currentOffset += 4;
           break;
         case 'uint256':
@@ -172,6 +175,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = this.readUInt256BE(buffer, currentOffset);
           }
+          debug(format('uint256: {}', obj));
           currentOffset += 32;
           break;
         case 'int8':
@@ -180,6 +184,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readInt8(currentOffset);
           }
+          debug(format('int8: {}', obj));
           currentOffset += 1;
           break;
         case 'int16':
@@ -188,6 +193,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readInt16BE(currentOffset);
           }
+          debug(format('int16: {}', obj));
           currentOffset += 2;
           break;
         case 'int32':
@@ -196,6 +202,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = buffer.readInt32BE(currentOffset);
           }
+          debug(format('int32: {}', obj));
           currentOffset += 4;
           break;
         case 'int256':
@@ -204,6 +211,7 @@ class BinOn {
           } else {
             obj[activeMap.fields[i].name] = this.readInt256BE(buffer, currentOffset);
           }
+          debug(format('int256: {}', obj));
           currentOffset += 32;
           break;
         case 'buffer':
@@ -211,8 +219,10 @@ class BinOn {
           currentOffset += 2;
           if (isNative) {
             obj = buffer.slice(currentOffset, currentOffset + length);
+            debug(format('buffer-a: {}', obj));
           } else {
             obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + length);
+            debug(format('buffer-b: {}', obj[activeMap.fields[i].name]));
           }
           currentOffset += length;
           break;
@@ -222,25 +232,30 @@ class BinOn {
             if (obj.length !== 128) {
               throw new Error(format('Failed to read 64 bytes for signature: ', obj.length));
             }
+            debug(format('signature-a: {}', obj));
           } else {
             obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 64).toString('hex');
             if (obj[activeMap.fields[i].name].length !== 128) {
               throw new Error(format('Failed to read 64 bytes for signature: {}', obj.length));
             }
+            debug(format('signature-b: {}', obj[activeMap.fields[i].name]));
           }
           currentOffset += 64;
           break;
         case 'address':
+          debug(format('address:{}', currentOffset));
           if (isNative) {
             obj = buffer.slice(currentOffset, currentOffset + 65).toString();
             if (obj.length !== 65) {
               throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
+            debug(format('address-a: {}', obj));
           } else {
             obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 65).toString();
             if (obj[activeMap.fields[i].name].length !== 65) {
               throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
+            debug(format('address-b: {}', obj[activeMap.fields[i].name]));
           }
 
           currentOffset += 65;
@@ -249,7 +264,7 @@ class BinOn {
           parts = activeMap.fields[i].type.split('*');
           if (parts.length > 1) {
             length = buffer.readUInt16BE(currentOffset);
-            // debug(format('array: [{}, {}]', activeMap.fields[i].name, currentOffset));
+            debug(format('array: [{}, {}, {}]', activeMap.fields[i].name, currentOffset, length));
             currentOffset += 2;
             obj[activeMap.fields[i].name] = [];
             for (let j = 0; j < length; j++) {
@@ -259,7 +274,7 @@ class BinOn {
               currentOffset = subResult.offset;
             }
           } else {
-            // debug(format('single: [{}, {}]', activeMap.fields[i].name, currentOffset));
+            debug(format('single: [{}, {}, {}]', activeMap.fields[i].name, currentOffset, length));
             let subResult = this.bufferToObj(buffer, currentOffset);
 
             obj[activeMap.fields[i].name] = subResult.obj;

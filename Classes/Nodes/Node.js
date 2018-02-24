@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Friday, February 23, 2018 4:02 PM
+ * @Last modified time: Saturday, February 24, 2018 9:35 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -117,29 +117,24 @@ class Node extends Base {
 
       if (inData.length >= 4) {
         debug('in:data: checking: ', buffer.length);
-        length = inData.readUInt32BE(0);
 
-        if (inData.length === length + 4) {
-          inData = inData.slice(4);
+        result = XYODATA.BinOn.bufferToObj(inData, 0);
+        if (result.obj) {
+          let obj = result.obj;
 
-          result = XYODATA.BinOn.bufferToObj(inData, 0);
-          if (result.obj) {
-            let obj = result.obj;
-
-            switch (obj.map) {
-              case "entry":
-                this.onEntry(socket, obj);
-                break;
-              default:
-                break;
-            }
-            inData = null;
-          } else {
-            debug('in:noobj');
+          switch (obj.map) {
+            case "entry":
+              this.onEntry(socket, obj);
+              break;
+            default:
+              break;
           }
+          inData = null;
         } else {
-          debug('in:badlen');
+          debug('in:noobj');
         }
+      } else {
+        debug('waiting:{}', inData.length);
       }
     }).on('close', () => {
       debug('in:close');
