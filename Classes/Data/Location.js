@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Location.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 1:55 PM
+ * @Last modified time: Tuesday, February 20, 2018 9:59 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -22,10 +22,9 @@ class Location extends Simple {
     super(binOn);
     this.type = 0x1004;
     this.map = 'location';
-    this.version = 1;
-    this.latitude = bigInt('327576968000000000'); // 16 places
-    this.longitude = bigInt('-1171490956000000000'); // 16 places
-    this.altitude = bigInt('150000000000000000'); // 16 places (meters)
+    this.latitude = bigInt('32757696800000000000'); // 18 places
+    this.longitude = bigInt('-117149095600000000000'); // 18 places
+    this.altitude = bigInt('15000000000000000000'); // 18 places (meters)
   }
 
 }

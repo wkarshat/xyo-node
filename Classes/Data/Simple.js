@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Simple.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 6:04 PM
+ * @Last modified time: Tuesday, February 20, 2018 9:20 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -28,7 +28,6 @@ class Simple extends Base {
   constructor(binOn) {
     super();
     this.type = 0x1001;
-    this.version = 1;
     this.map = "simple";
     this.binOn = binOn;
   }

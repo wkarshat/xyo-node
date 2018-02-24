@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: binon.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 6:05 PM
+ * @Last modified time: Friday, February 23, 2018 3:49 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -218,32 +218,32 @@ class BinOn {
           break;
         case 'signature':
           if (isNative) {
-            obj = buffer.slice(currentOffset, currentOffset + 128).toString('hex');
-            if (obj.length !== 256) {
-              throw new Error(format('Failed to read 128 bytes for signature: ', obj.length));
+            obj = buffer.slice(currentOffset, currentOffset + 64).toString('hex');
+            if (obj.length !== 128) {
+              throw new Error(format('Failed to read 64 bytes for signature: ', obj.length));
             }
           } else {
-            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 128).toString('hex');
-            if (obj[activeMap.fields[i].name].length !== 256) {
-              throw new Error(format('Failed to read 128 bytes for signature: {}', obj.length));
+            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 64).toString('hex');
+            if (obj[activeMap.fields[i].name].length !== 128) {
+              throw new Error(format('Failed to read 64 bytes for signature: {}', obj.length));
             }
           }
-          currentOffset += 128;
+          currentOffset += 64;
           break;
         case 'address':
           if (isNative) {
-            obj = buffer.slice(currentOffset, currentOffset + 220).toString();
-            if (obj.length !== 220) {
-              throw new Error(format('Failed to read 220 bytes for address: {}', obj.length));
+            obj = buffer.slice(currentOffset, currentOffset + 65).toString();
+            if (obj.length !== 65) {
+              throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
           } else {
-            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 220).toString();
-            if (obj[activeMap.fields[i].name].length !== 220) {
-              throw new Error(format('Failed to read 220 bytes for address: {}', obj.length));
+            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 65).toString();
+            if (obj[activeMap.fields[i].name].length !== 65) {
+              throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
           }
 
-          currentOffset += 220;
+          currentOffset += 65;
           break;
         default: // these are custom types
           parts = activeMap.fields[i].type.split('*');
@@ -429,13 +429,13 @@ class BinOn {
           break;
         case 'signature':
           if (isNative) {
-            if (obj.length !== 256) {
-              throw new Error(format('Signature must be 256 Bytes [{}]', obj.length));
+            if (obj.length !== 128) {
+              throw new Error(format('Signature must be 64 Bytes [{}]', obj.length));
             }
             buf = new Buffer(obj, 'hex');
           } else {
-            if (obj[activeMap.fields[i].name].length !== 256) {
-              throw new Error(format('Signature must be 256 Bytes [{}]', obj.length));
+            if (obj[activeMap.fields[i].name].length !== 128) {
+              throw new Error(format('Signature must be 64 Bytes [{}]', obj.length));
             }
             buf = new Buffer(obj[activeMap.fields[i].name], 'hex');
           }
@@ -443,15 +443,15 @@ class BinOn {
           buffers.push(buf);
           break;
         case 'address':
-          buf = Buffer.alloc(220);
+          buf = Buffer.alloc(65);
           if (isNative) {
-            if (obj.length !== 220) {
-              throw new Error(format('Address must be 220 Bytes [{}]', obj.length));
+            if (obj.length !== 65) {
+              throw new Error(format('Address must be 65 Bytes [{}]', obj.length));
             }
             buf.write(obj);
           } else {
-            if (obj[activeMap.fields[i].name].length !== 220) {
-              throw new Error(format('Address must be 220 Bytes [{}]', obj.length));
+            if (obj[activeMap.fields[i].name].length !== 65) {
+              throw new Error(format('Address must be 65 Bytes [{}]', obj.length));
             }
             buf.write(obj[activeMap.fields[i].name]);
           }

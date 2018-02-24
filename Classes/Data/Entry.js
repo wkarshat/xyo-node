@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Entry.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 8:56 AM
+ * @Last modified time: Tuesday, February 20, 2018 9:22 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -22,7 +22,6 @@ class Entry extends Simple {
     super(binOn);
     this.type = 0x1005;
     this.map = "entry";
-    this.version = 1;
     this.payloads = [];
     this.nonce = bigInt.randBetween(bigInt("0x0"), bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;

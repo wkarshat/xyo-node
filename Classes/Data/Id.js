@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Id.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @Last modified time: Tuesday, February 20, 2018 9:22 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -21,7 +21,6 @@ class Id extends Simple {
     super(binOn);
     this.type = 0x1003;
     this.map = 'id';
-    this.version = 1;
     this.domain = "xy";
     this.value = "12345";
   }

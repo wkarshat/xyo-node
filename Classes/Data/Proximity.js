@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Proximity.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:25 AM
+ * @Last modified time: Tuesday, February 20, 2018 9:59 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -23,7 +23,7 @@ class Proximity extends Simple {
     this.type = 0x1002;
     this.map = 'proximity';
     this.version = 1;
-    this.range = bigInt(10000000000000000); // 16 places (meters)
+    this.range = bigInt(1000000000000000000); // 18 places (meters)
   }
 
 }

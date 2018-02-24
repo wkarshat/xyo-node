@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 2:16 PM
+ * @Last modified time: Friday, February 23, 2018 4:02 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -103,7 +103,7 @@ class Node extends Base {
 
   in(socket) {
     debug('in');
-    let inData = null;
+    let length = 0, inData = null;
 
     socket.on('data', (buffer) => {
       debug('in:data: {}', buffer.length);
@@ -115,20 +115,31 @@ class Node extends Base {
         inData = buffer;
       }
 
-      result = XYODATA.BinOn.bufferToObj(inData, 0);
-      if (result.obj) {
-        let obj = result.obj;
+      if (inData.length >= 4) {
+        debug('in:data: checking: ', buffer.length);
+        length = inData.readUInt32BE(0);
 
-        switch (obj.map) {
-          case "entry":
-            this.onEntry(socket, obj);
-            break;
-          default:
-            break;
+        if (inData.length === length + 4) {
+          inData = inData.slice(4);
+
+          result = XYODATA.BinOn.bufferToObj(inData, 0);
+          if (result.obj) {
+            let obj = result.obj;
+
+            switch (obj.map) {
+              case "entry":
+                this.onEntry(socket, obj);
+                break;
+              default:
+                break;
+            }
+            inData = null;
+          } else {
+            debug('in:noobj');
+          }
+        } else {
+          debug('in:badlen');
         }
-        inData = null;
-      } else {
-        debug('in:noobj');
       }
     }).on('close', () => {
       debug('in:close');
@@ -266,7 +277,7 @@ class Node extends Base {
     let publicKeys = [];
 
     for (let i = 0; i < keys.length; i++) {
-      publicKeys.push(keys[i].public);
+      publicKeys.push(keys[i].public.getModulus('hex'));
     }
 
     return publicKeys;
@@ -282,7 +293,7 @@ class Node extends Base {
 
   generateKey() {
     debug('generateKey');
-    let key = URSA.generatePrivateKey(1024, 65537);
+    let key = URSA.generatePrivateKey(512, 65537);
 
     debug(key.toPublicPem().toString().split('-----BEGIN PUBLIC KEY-----')[1].split('-----END PUBLIC KEY-----')[0].replace('\n', '').length);
     return {
