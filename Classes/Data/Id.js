@@ -4,14 +4,14 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Id.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 20, 2018 9:22 AM
+ * @Last modified time: Monday, February 26, 2018 7:04 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 'use strict';
 
-const debug = require('debug')('Entry'),
+const debug = require('debug')('Id'),
   Simple = require('./Simple.js');
 
 class Id extends Simple {

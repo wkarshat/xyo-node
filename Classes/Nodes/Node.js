@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Saturday, February 24, 2018 9:35 AM
+ * @Last modified time: Monday, February 26, 2018 6:53 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -25,10 +25,8 @@ class Node extends Base {
 
   constructor(moniker, host, ports, config) {
     debug('constructor');
-    let self;
 
     super();
-    self = this;
     this.moniker = moniker;
 
     this.entries = [];
@@ -48,15 +46,20 @@ class Node extends Base {
     Node.fromPort[ports.api] = this;
     Node.fromPort[ports.pipe] = this;
     this.initKeys(3);
-    this.app.get('*', (req, res) => {
-      self.get(req, res);
-    });
     this.app.use(bodyParser.json());
+    this.app.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      next();
+    });
+    this.app.get('*', (req, res) => {
+      this.get(req, res);
+    });
     this.app.post('*', (req, res) => {
       if (!(req.body)) {
         return res.status(400).send("Empty body not allowed");
       }
-      self.post(req, res);
+      this.post(req, res);
     });
   }
 
@@ -103,7 +106,7 @@ class Node extends Base {
 
   in(socket) {
     debug('in');
-    let length = 0, inData = null;
+    let inData = null;
 
     socket.on('data', (buffer) => {
       debug('in:data: {}', buffer.length);
@@ -176,7 +179,8 @@ class Node extends Base {
   out(target, buffer) {
     debug(format('out: {},{},{}', target.host, target.port, buffer.length));
 
-    let inData = null, socket = NET.createConnection(target.port, target.host);
+    let inData = null,
+      socket = NET.createConnection(target.port, target.host);
 
     socket.on('data', (data) => {
       let result;
@@ -214,7 +218,10 @@ class Node extends Base {
   addPeer(host, ports) {
     debug(format('addPeer[{}, {}]', host, ports.pipe));
     if (!(this.host === host && this.ports.pipe === ports.pipe)) {
-      this.peers.push({ host: host, port: ports.pipe });
+      this.peers.push({
+        host: host,
+        port: ports.pipe
+      });
     }
   }
 
@@ -302,7 +309,9 @@ class Node extends Base {
 
   sign(payload, signingKeys) {
     debug('sign:');
-    let keys = [], signature, signatures = [], signKeys = signingKeys || this.keys;
+    let keys = [],
+      signature, signatures = [],
+      signKeys = signingKeys || this.keys;
 
     for (let i = 0; i < signKeys.length; i++) {
       // debug(format('sign: {},{}', i, this.keys[i].public.length));
@@ -316,7 +325,10 @@ class Node extends Base {
       keys.push(signKeys[i].public);
       // debug(format('sign: {},{}', i, signatures[i].length));
     }
-    return { signatures: signatures, keys: keys };
+    return {
+      signatures: signatures,
+      keys: keys
+    };
   }
 
   getKeyUses(index) {
@@ -360,7 +372,8 @@ class Node extends Base {
 
   returnJSONEntries(req, res) {
     debug('returnJSONItems');
-    let pathParts = req.path.split("/"), id = null;
+    let pathParts = req.path.split("/"),
+      id = null;
 
     if (pathParts.length > 2) {
       id = pathParts[2];

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 2:03 PM
+ * @Last modified time: Monday, February 26, 2018 7:08 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -23,6 +23,8 @@ class Diviner extends Node {
     process.title = "XYO-Diviner";
     super(moniker, host, ports, config);
     this.archivists = [];
+    this.pendingQueries = [];
+    this.completedQueries = [];
   }
 
   query(question, callback) {
@@ -37,6 +39,57 @@ class Diviner extends Node {
         });
       });
     });
+  }
+
+  get(req, res) {
+    debug("get");
+    let contentType = req.headers['content-type'],
+      pathParts = req.path.split("/");
+
+    if (contentType && pathParts.length > 1) {
+      let action = pathParts[1];
+
+      switch (contentType) {
+        case 'application/json':
+          switch (action) {
+            case "pending":
+              return this.returnJSONPending(req, res);
+            default:
+              return super.get(req, res);
+          }
+        default:
+          return super.get(req, res);
+      }
+    }
+    return super.get(req, res);
+  }
+
+  post(req, res) {
+    debug('post');
+    let contentType = req.headers['content-type'],
+      pathParts = req.path.split("/");
+
+    if (contentType) {
+      let action = pathParts[1];
+
+      switch (contentType) {
+        case 'application/json':
+          switch (action) {
+            case "query":
+              return this.postQuery(req, res);
+            default:
+              break;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    return super.post(req, res);
+  }
+
+  postQuery(req, res) {
+    return res.status(200).send(req.path);
   }
 
   processBlocks(question, blocks, callback) {
@@ -80,6 +133,18 @@ class Diviner extends Node {
     });
   }
 
+  getPending() {
+    return {
+      queries: [{
+        target: "xxxxx",
+        bounty: 1
+      }, {
+        target: "yyyyy",
+        bounty: 1
+      }]
+    };
+  }
+
   findPeers(diviners) {
     debug("findPeers");
     let key;
@@ -115,7 +180,10 @@ class Diviner extends Node {
   addArchivist(host, ports) {
     debug("addArchivist");
     if (!(this.host === host && this.ports.pipe === ports.pipe)) {
-      this.archivists.push({ host: host, port: ports.pipe });
+      this.archivists.push({
+        host: host,
+        port: ports.pipe
+      });
     }
   }
 
@@ -134,6 +202,11 @@ class Diviner extends Node {
     status.type = "Diviner";
     status.archivists = this.archivists.length;
     return status;
+  }
+
+  returnJSONPending(req, res) {
+    debug('returnJSONPending');
+    res.status(200).send(JSON.stringify(this.getPending()));
   }
 }
 
