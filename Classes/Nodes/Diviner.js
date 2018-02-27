@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Monday, February 26, 2018 7:10 PM
+ * @Last modified time: Tuesday, February 27, 2018 9:49 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -25,6 +25,10 @@ class Diviner extends Node {
     this.archivists = [];
     this.pendingQueries = [];
     this.completedQueries = [];
+  }
+
+  connectToEthereum(address) {
+    
   }
 
   query(question, callback) {
