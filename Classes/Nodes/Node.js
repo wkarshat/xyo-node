@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 27, 2018 1:00 PM
+ * @Last modified time: Tuesday, February 27, 2018 1:33 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -16,7 +16,6 @@ const debug = require('debug')('Node'),
   Express = require('express'),
   bodyParser = require('body-parser'),
   format = require('string-format'),
-  CRYPTO = require('crypto'),
   URSA = require('ursa'),
   NET = require('net'),
   XYODATA = require('../../xyodata.js');

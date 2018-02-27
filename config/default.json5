@@ -213,5 +213,5 @@
     ]
   },
   testdataclasses: true,
-  clock: 1000
+  clock: 5000
 }
