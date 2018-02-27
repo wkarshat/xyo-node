@@ -153,7 +153,7 @@
         api:23457,
         pipe:27457
       },
-      host: "2.archivist.xyo.network",
+      host: "localhost",
       action: "connect"
     },
     xy3: {

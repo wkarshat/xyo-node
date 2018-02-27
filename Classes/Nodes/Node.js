@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Monday, February 26, 2018 6:53 PM
+ * @Last modified time: Tuesday, February 27, 2018 1:00 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -279,7 +279,7 @@ class Node extends Base {
     let publicKeys = [];
 
     for (let i = 0; i < keys.length; i++) {
-      publicKeys.push(keys[i].public.getModulus('hex'));
+      publicKeys.push(keys[i].public);
     }
 
     return publicKeys;
@@ -297,13 +297,12 @@ class Node extends Base {
     debug('generateKey');
     let key = URSA.generatePrivateKey(512, 65537);
 
-    debug(key.toPublicPem().toString().split('-----BEGIN PUBLIC KEY-----')[1].split('-----END PUBLIC KEY-----')[0].replace('\n', '').length);
+    debug(key);
+
     return {
       used: 0,
-      publicPem: key.toPublicPem(),
-      public: key.toPublicPem().toString().split('-----BEGIN PUBLIC KEY-----')[1].split('-----END PUBLIC KEY-----')[0].replace('\n', ''),
-      privatePem: key.toPrivatePem(),
-      ssh: key.toPublicSsh()
+      key: key,
+      public: key.getModulus()
     };
   }
 
@@ -315,11 +314,10 @@ class Node extends Base {
 
     for (let i = 0; i < signKeys.length; i++) {
       // debug(format('sign: {},{}', i, this.keys[i].public.length));
-      let signer = CRYPTO.createSign('SHA256');
+      let signer = URSA.createSigner('RSA-SHA256');
 
       signer.update(payload);
-      signer.end();
-      signature = signer.sign(signKeys[i].privatePem).toString('hex');
+      signature = signer.sign(signKeys[i].key);
       // debug(format('SIGLEN: {}', signature.length));
       signatures.push(signature);
       keys.push(signKeys[i].public);

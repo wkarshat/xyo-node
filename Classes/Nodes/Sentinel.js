@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Sentinel.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 2:04 PM
+ * @Last modified time: Tuesday, February 27, 2018 11:27 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */

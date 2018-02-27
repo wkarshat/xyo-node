@@ -1,3 +1,14 @@
+# @Author: XY | The Findables Company <arietrouw>
+# @Date:   Tuesday, February 27, 2018 9:50 AM
+# @Email:  developer@xyfindables.com
+# @Filename: .eslintrc
+# @Last modified by:   arietrouw
+# @Last modified time: Tuesday, February 27, 2018 11:05 AM
+# @License: All Rights Reserved
+# @Copyright: Copyright XY | The Findables Company
+
+
+
 {
   "env": {
     "node": true,
@@ -64,6 +75,7 @@
     "no-unused-expressions": [ 2, { "allowShortCircuit": true } ],
     "no-useless-call": 2,
     "no-useless-concat": 2,
+    "no-useless-escape": 0,
     "no-void": 2,
     "no-warning-comments": 1,
     "no-with": 2,
