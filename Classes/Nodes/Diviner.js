@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Monday, February 26, 2018 7:08 PM
+ * @Last modified time: Monday, February 26, 2018 7:10 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */

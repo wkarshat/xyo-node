@@ -4,14 +4,14 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Location.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 20, 2018 9:59 AM
+ * @Last modified time: Monday, February 26, 2018 7:10 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 'use strict';
 
-const debug = require('debug')('Entry'),
+const debug = require('debug')('Location'),
   Simple = require('./Simple.js'),
   bigInt = require('big-integer');
 
