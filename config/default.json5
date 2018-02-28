@@ -180,7 +180,10 @@
         pipe:28456
       },
       host: "localhost",
-      action: "connect"
+      action: "connect",
+      config: {
+        ethAddress: "http://localhost:8546"
+      }
     },
     xy2: {
       ports:{

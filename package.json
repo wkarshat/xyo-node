@@ -16,19 +16,24 @@
     "clear": "0.0.1",
     "config": "^1.29.2",
     "debug": "^3.1.0",
+    "ethereumjs-testrpc": "^6.0.3",
     "express": "^4.16.2",
+    "ganache-cli": "^6.0.3",
     "gulp": "^3.9.1",
     "gulp-env": "^0.4.0",
     "gulp-nodemon": "^2.2.1",
     "is-my-json-valid": "^2.17.1",
     "json5": "^0.5.1",
     "node-debugger": "^1.0.0",
+    "parity": "^0.2.7",
+    "solc": "^0.4.20",
     "string-format": "^0.5.0",
     "ursa": "^0.9.4",
+    "web3": "^0.14.0",
     "websocket": "^1.0.25"
   },
   "devDependencies": {
-    "eslint": "^4.16.0",
+    "eslint": "^4.18.1",
     "gulp-debug": "^3.2.0"
   }
 }
