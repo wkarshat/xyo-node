@@ -2,15 +2,15 @@
  * @Author: XY | The Findables Company <arietrouw>
  * @Date:   Saturday, July 18, 2015 11:24 PM
  * @Email:  developer@xyfindables.com
- * @Filename: server.js
+ * @Filename: index.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 1:57 PM
+ * @Last modified time: Thursday, March 1, 2018 1:40 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 "use strict";
-let debug = require("debug")("server"),
+let debug = require("debug")("xyo-node"),
   XYO = require("./xyo.js"),
   CONFIG = require("config"),
   TESTDATACLASSES = require("./testdataclasses.js"),

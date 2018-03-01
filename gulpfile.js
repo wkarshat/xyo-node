@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: gulpfile.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 27, 2018 11:24 AM
+ * @Last modified time: Thursday, March 1, 2018 1:39 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -85,12 +85,12 @@ gulp.task('nodemon-inspect', (cb) => {
 
   env({
     vars: {
-      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-body-parser*'
+      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-testsataclasses*,-BinOn*'
     }
   });
 
   return nodemon({
-    'script': 'server.js',
+    'script': 'index.js',
     'nodeArgs': '--inspect-brk'
   }).on('start', () => {
     // to avoid nodemon being started multiple times
@@ -109,12 +109,12 @@ gulp.task('nodemon', (cb) => {
 
   env({
     vars: {
-      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*'
+      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-testsataclasses*,-BinOn*'
     }
   });
 
   return nodemon({
-    'script': 'server.js'
+    'script': 'index.js'
   }).on('start', () => {
     // to avoid nodemon being started multiple times
     // thanks @matthisk

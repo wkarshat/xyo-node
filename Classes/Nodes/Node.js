@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 27, 2018 3:53 PM
+ * @Last modified time: Thursday, March 1, 2018 1:40 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -295,8 +295,6 @@ class Node extends Base {
   generateKey() {
     debug('generateKey');
     let key = URSA.generatePrivateKey(512, 65537);
-
-    debug(key);
 
     return {
       used: 0,

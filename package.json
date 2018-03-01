@@ -1,8 +1,8 @@
 {
   "name": "xyo-node",
-  "version": "0.0.1",
-  "description": "XY Oracle Server",
-  "main": "server.js",
+  "version": "0.1.1",
+  "description": "XY Oracle Platform implemented in Node.js",
+  "main": "index.js",
   "scripts": {
     "lint": "eslint src/js"
   },
