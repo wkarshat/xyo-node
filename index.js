@@ -4,31 +4,31 @@
  * @Email:  developer@xyfindables.com
  * @Filename: index.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 1:40 PM
+ * @Last modified time: Thursday, March 1, 2018 2:59 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
-"use strict";
-let debug = require("debug")("xyo-node"),
-  XYO = require("./xyo.js"),
-  CONFIG = require("config"),
-  TESTDATACLASSES = require("./testdataclasses.js"),
-  XYODATA = require("./xyodata.js");
+'use strict';
+let debug = require('debug')('xyo-node'),
+  XYO = require('./xyo.js'),
+  CONFIG = require('config'),
+  TESTDATACLASSES = require('./testdataclasses.js'),
+  XYODATA = require('./xyodata.js');
 
 /* ================= */
 /*  Local Functions  */
 /* ================= */
 
 const initialize = (complete) => {
-    debug("initializing...");
+    debug('Initializing...');
     let key;
 
     if (CONFIG.sentinels) {
       for (key in CONFIG.sentinels) {
         let sentinel = CONFIG.sentinels[key];
 
-        if (sentinel.action === "launch") {
+        if (sentinel.action === 'launch') {
           XYO.fromPort[sentinel.ports.pipe] = XYO.fromPort[sentinel.ports.pipe] || new XYO.Sentinel(sentinel.moniker, sentinel.host, sentinel.ports, sentinel.config || {});
         }
       }
@@ -38,7 +38,7 @@ const initialize = (complete) => {
       for (key in CONFIG.bridges) {
         let bridge = CONFIG.bridges[key];
 
-        if (bridge.action === "launch") {
+        if (bridge.action === 'launch') {
           XYO.fromPort[bridge.ports.pipe] = XYO.fromPort[bridge.ports.pipe] || new XYO.Bridge(bridge.moniker, bridge.host, bridge.ports, bridge.config || {});
         }
       }
@@ -48,7 +48,7 @@ const initialize = (complete) => {
       for (key in CONFIG.archivists) {
         let archivist = CONFIG.archivists[key];
 
-        if (archivist.action === "launch") {
+        if (archivist.action === 'launch') {
           XYO.fromPort[archivist.ports.pipe] = XYO.fromPort[archivist.ports.pipe] || new XYO.Archivist(archivist.moniker, archivist.host, archivist.ports, archivist.config || {});
           XYO.fromPort[archivist.ports.pipe].findPeers(CONFIG.archivists);
         }
@@ -59,7 +59,7 @@ const initialize = (complete) => {
       for (key in CONFIG.diviners) {
         let diviner = CONFIG.diviners[key];
 
-        if (diviner.action === "launch") {
+        if (diviner.action === 'launch') {
           XYO.fromPort[diviner.ports.pipe] = XYO.fromPort[diviner.ports.pipe] || new XYO.Diviner(diviner.moniker, diviner.host, diviner.ports, diviner.config || {});
           XYO.fromPort[diviner.ports.pipe].findPeers(CONFIG.diviners);
           XYO.fromPort[diviner.ports.pipe].findArchivists(CONFIG.archivists);
@@ -73,7 +73,7 @@ const initialize = (complete) => {
 
   },
   updateObjects = () => {
-    // debug(">>>>>>>>TIMER<<<<<<<<<");
+    // debug('>>>>>>>>TIMER<<<<<<<<<');
     let key;
 
     XYO.Base.updateCount++;
@@ -95,23 +95,8 @@ const initialize = (complete) => {
     startTimers();
   };
 
-/* ============= */
-/*  Application  */
-/* ============= */
-
-/* app.get("/blocks", (req, res) => res.send(JSON.stringify(BLOCKCHAIN.blockchain)));
-
-app.post("/mineBlock", (req, res) => {
-  let newBlock = BLOCKCHAIN.generateNextBlock(req.body.data);
-
-  BLOCKCHAIN.addBlock(newBlock);
-  // broadcast(responseLatestMsg());
-  // debug('block added: ' + JSON.stringify(newBlock));
-  res.send();
-}); */
 
 initialize(() => {
-  debug('initialize: ', process.title);
   XYODATA.BinOn.loadMaps(null, () => {
     if (CONFIG.testdataclasses) {
       TESTDATACLASSES.All();

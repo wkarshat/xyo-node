@@ -1,28 +1,39 @@
 {
   "name": "xyo-node",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "XY Oracle Platform implemented in Node.js",
   "main": "index.js",
+  "directories": {
+    "BinOn": "BinOn",
+    "Classes": "Classes",
+    "config": "config"
+  },
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src/js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XYOracleNetwork/xyo-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/XYOracleNetwork/xyo-node/issues"
+  },
+  "homepage": "https://github.com/XYOracleNetwork/xyo-node#readme",
+  "keywords": ["xyo", "xy", "oracle", "bitcoin", "eth", "ethereum", "location"],
   "author": "Arie Trouw",
-  "license": "ISC",
+  "license": "GNU",
   "dependencies": {
     "big-integer": "^1.6.26",
     "browser-sync": "^2.23.6",
-    "buffer-concat": "^1.0.0",
     "buffer-crc32": "^0.2.13",
-    "clear": "0.0.1",
     "config": "^1.30.0",
     "debug": "^3.1.0",
-    "ethereumjs-testrpc": "^6.0.3",
     "express": "^4.16.2",
     "ganache-cli": "^6.0.3",
     "gulp": "^3.9.1",
     "gulp-env": "^0.4.0",
     "gulp-nodemon": "^2.2.1",
-    "is-my-json-valid": "^2.17.2",
     "json5": "^0.5.1",
     "node-debugger": "^1.0.0",
     "parity": "^0.2.7",

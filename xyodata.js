@@ -4,17 +4,14 @@
  * @Email:  developer@xyfindables.com
  * @Filename: xyodata.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 14, 2018 11:27 AM
+ * @Last modified time: Thursday, March 1, 2018 3:00 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 "use strict";
-const debug = require("debug")("xyodata"),
-  BINON = require("./binon.js"),
+const BINON = require("./binon.js"),
   XYODATA = {};
-
-debug("loading...");
 
 XYODATA.Simple = require("./Classes/Data/Simple.js");
 XYODATA.Entry = require("./Classes/Data/Entry.js");

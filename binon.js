@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: binon.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 27, 2018 1:27 PM
+ * @Last modified time: Thursday, March 1, 2018 3:14 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: gulpfile.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 1:39 PM
+ * @Last modified time: Thursday, March 1, 2018 2:44 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -13,8 +13,11 @@
 
 const gulp = require('gulp'),
   nodemon = require('gulp-nodemon'),
-  env = require('gulp-env'),
-  clear = require('clear');
+  env = require('gulp-env');
+
+gulp.clear = () => {
+  process.stdout.write('\x1b[2J');
+};
 
 gulp.args = () => {
 
@@ -54,14 +57,12 @@ gulp.task('default', () => {
 
   if (args.run) {
     process.env.NODE_ENV = args.run;
-  } else {
-    process.env.NODE_ENV = 'default';
   }
   gulp.start('run');
 });
 
 gulp.task('run', ['nodemon'], () => {
-
+  gulp.clear();
 });
 
 gulp.task('inspect', () => {
@@ -95,7 +96,7 @@ gulp.task('nodemon-inspect', (cb) => {
   }).on('start', () => {
     // to avoid nodemon being started multiple times
     // thanks @matthisk
-    clear();
+    gulp.clear();
     if (!started) {
       cb();
       started = true;
@@ -118,7 +119,7 @@ gulp.task('nodemon', (cb) => {
   }).on('start', () => {
     // to avoid nodemon being started multiple times
     // thanks @matthisk
-    clear();
+    gulp.clear();
     if (!started) {
       cb();
       started = true;
