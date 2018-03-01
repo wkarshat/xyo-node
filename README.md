@@ -11,8 +11,7 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-Node-v9.7.0+
-https://nodejs.org/en/download/current/
+[Node-v9.7.0+](https://nodejs.org/en/download/current/)
 ```
 
 ```
@@ -44,7 +43,7 @@ npm install --global xyo-node
 
 ## Authors
 
-* **Arie Trouw** - *Initial work* - [XYO](https://github.com/XYOracleNetwork)
+* **Arie Trouw** - *Initial work* - [XYO Network](https://github.com/XYOracleNetwork)
 
 See also the list of [contributors](https://github.com/XYOracleNetwork/xyo-node/contributors) who participated in this project.
 
