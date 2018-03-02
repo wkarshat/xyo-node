@@ -223,11 +223,6 @@
       }
     }
   },
-  binon: {
-    folder: [
-      "./BinOn"
-    ]
-  },
   testdataclasses: true,
   clock: 5000
 }

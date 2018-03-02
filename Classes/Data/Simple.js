@@ -4,14 +4,16 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Simple.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 4:41 PM
+ * @Last modified time: Friday, March 2, 2018 8:23 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
-"use strict";
+'use strict';
 
-const Base = require("../Base.js");
+const Base = require('../Base.js'),
+  debug = require('debug')('Simple'),
+  CryptoByteBuffer = require('./CryptoByteBuffer.js');
 
 /* Types */
 /* =============
@@ -26,16 +28,53 @@ const Base = require("../Base.js");
 
 class Simple extends Base {
 
-  constructor(binOn) {
+  constructor(buffer) {
     super();
     this.type = 0x1001;
-    this.map = "simple";
-    this.binOn = binOn;
+    if (buffer) {
+      this.fromBuffer(buffer);
+    }
   }
 
   toBuffer() {
-    return this.binOn.objToBuffer(this, null, true);
+    let buffer = new CryptoByteBuffer(16, false);
+
+    buffer.writeUInt16(this.type);
+    return buffer;
+  }
+
+  static registerClass(typeId, constructFunc) {
+    if (Simple.classMap[typeId]) {
+      throw new Error('Duplicate Class Id');
+    }
+    Simple.classMap[typeId] = constructFunc;
+  }
+
+  static fromBuffer(buffer) {
+    let type, byteBuffer;
+
+    byteBuffer = CryptoByteBuffer.wrap(buffer);
+    byteBuffer.clear();
+
+    type = byteBuffer.readUInt16();
+
+    if (!Simple.classMap[type]) {
+      throw new Error(`Unknown Class: ${type}`);
+    }
+
+    return new Simple.classMap[type](byteBuffer);
+  }
+
+  fromBuffer(buffer) {
+    let byteBuffer = CryptoByteBuffer.wrap(buffer);
+
+    byteBuffer.clear();
+    this.type = byteBuffer.readUInt16();
+    return this;
   }
 }
+
+Simple.classMap = {};
+Simple.classMap[0x1001] = Simple;
 
 module.exports = Simple;

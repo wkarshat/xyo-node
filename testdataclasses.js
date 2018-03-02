@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: testdataclasses.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 8:04 PM
+ * @Last modified time: Friday, March 2, 2018 1:26 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -21,8 +21,8 @@ TestDataClasses.All = () => {
   debug("*      Testing Data Classes       *");
   debug("***********************************");
 
-  let simple = new XYODATA.Simple(XYODATA.BinOn),
-    entry = new XYODATA.Entry(XYODATA.BinOn),
+  let simple = new XYODATA.Simple(),
+    entry = new XYODATA.Entry(),
     node = new XYO.Node('test', 'localhost', {
       api: 8080,
       pipe: 8088
@@ -46,19 +46,19 @@ TestDataClasses.All = () => {
   }, () => {}); */
 
   debug("* ===== O2B Testing 'simple' ===== *");
-  b0 = XYODATA.BinOn.objToBuffer(simple, null, true);
-  debug(b0.toString("hex"));
+  b0 = simple.toBuffer();
+  debug(b0);
 
   debug("* ===== O2B Testing 'entry' ===== *");
-  b2 = XYODATA.BinOn.objToBuffer(entry, null, true);
-  debug(b2.toString("hex"));
+  b2 = entry.toBuffer();
+  debug(b2);
 
   debug("* ===== B2O Testing 'simple' ===== *");
-  res0 = XYODATA.BinOn.bufferToObj(b0, 0);
+  res0 = XYODATA.Simple.fromBuffer(b0);
   debug(JSON.stringify(res0.obj));
 
   debug("* ===== B2O Testing 'entry' ===== * ", b2.length);
-  res2 = XYODATA.BinOn.bufferToObj(b2, 0);
+  res2 = XYODATA.Simple.fromBuffer(b2);
   debug(JSON.stringify(res2.obj));
 
 };

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 6:48 PM
+ * @Last modified time: Friday, March 2, 2018 12:53 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -120,7 +120,7 @@ class Node extends Base {
       if (inData.length >= 4) {
         debug('in:data: checking: ', buffer.length);
 
-        result = XYODATA.BinOn.bufferToObj(inData, 0);
+        result = XYODATA.Simple.fromBuffer(inData);
         if (result.obj) {
           let obj = result.obj;
 
@@ -191,7 +191,7 @@ class Node extends Base {
         inData = data;
       }
 
-      result = XYODATA.BinOn.bufferToObj(inData, 0);
+      result = XYODATA.Simple.fromBuffer(inData);
 
       if (result.obj) {
         let obj = result.obj;

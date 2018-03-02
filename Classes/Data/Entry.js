@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Entry.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 8:06 PM
+ * @Last modified time: Friday, March 2, 2018 1:15 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -13,18 +13,19 @@
 
 const debug = require("debug")("Entry"),
   Simple = require("./Simple.js"),
+  CryptoByteBuffer = require("./CryptoByteBuffer.js"),
   bigInt = require("big-integer");
 
 class Entry extends Simple {
 
-  constructor(binOn) {
+  constructor(buffer) {
     // debug("constructor");
-    super(binOn);
+    super(buffer);
     this.type = 0x1005;
-    this.map = "entry";
-    this.payload = Buffer.alloc(1);
+    this.payloads = [];
     this.nonce = bigInt.randBetween(bigInt("0x0"), bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;
+    this.epoch = 0;
     this.p1keys = [];
     this.p2keys = [];
 
@@ -78,6 +79,45 @@ class Entry extends Simple {
       callback(this);
     }
   }
+
+  toBuffer() {
+    let buffer = super.toBuffer();
+
+    buffer.writeBufferArray(this.payloads);
+    buffer.writeUInt32(this.epoch);
+    buffer.writeUInt256(this.nonce);
+    buffer.writeBufferArray(this.p1keys);
+    buffer.writeBufferArray(this.p2keys);
+    buffer.writeBufferArray(this.p2signatures);
+    buffer.writeBufferArray(this.p1signatures);
+    buffer.writeBufferArray(this.headKeys);
+    buffer.writeBufferArray(this.tailKeys);
+    buffer.writeBufferArray(this.headSignatures);
+    buffer.writeBufferArray(this.tailSignatures);
+    return buffer;
+  }
+
+  fromBuffer(buffer) {
+    let byteBuffer = CryptoByteBuffer.wrap(buffer);
+
+    super.fromBuffer(byteBuffer);
+
+    this.payloads = byteBuffer.readBufferArray();
+    this.epoch = byteBuffer.readUInt32();
+    this.nonce = byteBuffer.readUInt256();
+    this.p1keys = byteBuffer.readBufferArray();
+    this.p2keys = byteBuffer.readBufferArray();
+    this.p2signatures = byteBuffer.readBufferArray();
+    this.p1signatures = buffer.readBufferArray();
+    this.headKeys = byteBuffer.readBufferArray();
+    this.tailKeys = byteBuffer.readBufferArray();
+    this.headSignatures = byteBuffer.readBufferArray();
+    this.tailSignatures = byteBuffer.readBufferArray();
+
+    return this;
+  }
 }
+
+Simple.classMap[0x1005] = Entry;
 
 module.exports = Entry;

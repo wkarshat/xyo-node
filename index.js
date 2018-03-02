@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: index.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 5:31 PM
+ * @Last modified time: Friday, March 2, 2018 12:55 AM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -13,8 +13,7 @@
 let debug = require('debug')('xyo-node'),
   XYO = require('./xyo.js'),
   CONFIG = require('config'),
-  TESTDATACLASSES = require('./testdataclasses.js'),
-  XYODATA = require('./xyodata.js');
+  TESTDATACLASSES = require('./testdataclasses.js');
 
 /* ================= */
 /*  Local Functions  */
@@ -103,10 +102,8 @@ const initialize = (complete) => {
 
 
 initialize(() => {
-  XYODATA.BinOn.loadMaps(null, () => {
-    if (CONFIG.testdataclasses) {
-      TESTDATACLASSES.All();
-    }
-    run();
-  });
+  if (CONFIG.testdataclasses) {
+    TESTDATACLASSES.All();
+  }
+  run();
 });
