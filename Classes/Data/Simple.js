@@ -4,15 +4,14 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Simple.js
  * @Last modified by:   arietrouw
- * @Last modified time: Monday, February 26, 2018 7:02 PM
+ * @Last modified time: Thursday, March 1, 2018 4:41 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
 
 "use strict";
 
-const debug = require("debug")("Simple"),
-  Base = require("../Base.js");
+const Base = require("../Base.js");
 
 /* Types */
 /* =============

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Id.js
  * @Last modified by:   arietrouw
- * @Last modified time: Monday, February 26, 2018 7:04 PM
+ * @Last modified time: Thursday, March 1, 2018 7:18 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -12,7 +12,8 @@
 'use strict';
 
 const debug = require('debug')('Id'),
-  Simple = require('./Simple.js');
+  Simple = require('./Simple.js'),
+  bigInt = require('big-integer');
 
 class Id extends Simple {
 
@@ -21,8 +22,7 @@ class Id extends Simple {
     super(binOn);
     this.type = 0x1003;
     this.map = 'id';
-    this.domain = "xy";
-    this.value = "12345";
+    this.id = bigInt('0');
   }
 
 }

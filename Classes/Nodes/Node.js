@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 1:40 PM
+ * @Last modified time: Thursday, March 1, 2018 6:48 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -16,7 +16,7 @@ const debug = require('debug')('Node'),
   Express = require('express'),
   bodyParser = require('body-parser'),
   format = require('string-format'),
-  URSA = require('ursa'),
+  NodeRSA = require('node-rsa'),
   NET = require('net'),
   XYODATA = require('../../xyodata.js');
 
@@ -152,7 +152,9 @@ class Node extends Base {
     if (entry.p1signatures.length === 0) {
       debug("onEntry: P1");
       entry.p1Sign((payload) => {
-        return self.sign(payload);
+        let signatures = self.sign(payload);
+
+        return signatures;
       }, () => {
         let buffer = entry.toBuffer();
 
@@ -177,7 +179,6 @@ class Node extends Base {
 
   out(target, buffer) {
     debug(format('out: {},{},{}', target.host, target.port, buffer.length));
-
     let inData = null,
       socket = NET.createConnection(target.port, target.host);
 
@@ -278,7 +279,7 @@ class Node extends Base {
     let publicKeys = [];
 
     for (let i = 0; i < keys.length; i++) {
-      publicKeys.push(keys[i].public);
+      publicKeys.push(keys[i].exportKey('components-public').n);
     }
 
     return publicKeys;
@@ -288,37 +289,22 @@ class Node extends Base {
     debug('initKeys');
     this.keys = [];
     for (let i = 0; i < count; i++) {
-      this.keys.push(this.generateKey());
+      this.keys.push(new NodeRSA({ b: 512 }));
     }
   }
 
-  generateKey() {
-    debug('generateKey');
-    let key = URSA.generatePrivateKey(512, 65537);
-
-    return {
-      used: 0,
-      key: key,
-      public: key.getModulus()
-    };
-  }
-
   sign(payload, signingKeys) {
-    debug('sign:');
+    debug('sign');
     let keys = [],
       signature, signatures = [],
       signKeys = signingKeys || this.keys;
 
     for (let i = 0; i < signKeys.length; i++) {
-      // debug(format('sign: {},{}', i, this.keys[i].public.length));
-      let signer = URSA.createSigner('RSA-SHA256');
-
-      signer.update(payload);
-      signature = signer.sign(signKeys[i].key);
-      // debug(format('SIGLEN: {}', signature.length));
+      signature = signKeys[i].sign(payload);
+      debug(format('SIGLEN: {}', signature.length));
       signatures.push(signature);
-      keys.push(signKeys[i].public);
-      // debug(format('sign: {},{}', i, signatures[i].length));
+      keys.push(signKeys[i].exportKey('components-public').n);
+      debug(format('sign: {},{}', i, signatures[i].length));
     }
     return {
       signatures: signatures,
@@ -339,7 +325,7 @@ class Node extends Base {
 
       key.used += 1;
       if (key.used >= this.getKeyUses(i)) {
-        this.keys[i] = this.generateKey();
+        this.keys[i] = new NodeRSA({ b: 512 });
       }
     }
   }

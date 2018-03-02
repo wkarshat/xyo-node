@@ -5,8 +5,8 @@
   type: 0x1003,
   fields: [{
       index: 0,
-      name: "value",
-      type: "string"
+      name: "id",
+      type: "uint256"
     }
   ]
 }

@@ -192,7 +192,11 @@
         pipe:28457
       },
       host: "2.diviner.xyo.network",
-      action: "connect"
+      action: "connect",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
     },
     xy3: {
       ports:{
@@ -200,7 +204,11 @@
         pipe:28458
       },
       host: "3.diviner.xyo.network",
-      action: "connect"
+      action: "connect",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
     },
     xy4: {
       ports:{
@@ -208,7 +216,11 @@
         pipe:28459
       },
       host: "4.diviner.xyo.network",
-      action: "connect"
+      action: "connect",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
     }
   },
   binon: {

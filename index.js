@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: index.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 2:59 PM
+ * @Last modified time: Thursday, March 1, 2018 5:31 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -28,8 +28,9 @@ const initialize = (complete) => {
       for (key in CONFIG.sentinels) {
         let sentinel = CONFIG.sentinels[key];
 
+        debug(`Sentinel Action: ${sentinel.action}`);
         if (sentinel.action === 'launch') {
-          XYO.fromPort[sentinel.ports.pipe] = XYO.fromPort[sentinel.ports.pipe] || new XYO.Sentinel(sentinel.moniker, sentinel.host, sentinel.ports, sentinel.config || {});
+          XYO.fromPort[sentinel.ports.pipe] = XYO.fromPort[sentinel.ports.pipe] || new XYO.Sentinel(`sentinel-${key}`, sentinel.host, sentinel.ports, sentinel.config || {});
         }
       }
     }
@@ -38,8 +39,9 @@ const initialize = (complete) => {
       for (key in CONFIG.bridges) {
         let bridge = CONFIG.bridges[key];
 
+        debug(`Bridge Action: ${bridge.action}`);
         if (bridge.action === 'launch') {
-          XYO.fromPort[bridge.ports.pipe] = XYO.fromPort[bridge.ports.pipe] || new XYO.Bridge(bridge.moniker, bridge.host, bridge.ports, bridge.config || {});
+          XYO.fromPort[bridge.ports.pipe] = XYO.fromPort[bridge.ports.pipe] || new XYO.Bridge(`bridge-${key}`, bridge.host, bridge.ports, bridge.config || {});
         }
       }
     }
@@ -48,8 +50,10 @@ const initialize = (complete) => {
       for (key in CONFIG.archivists) {
         let archivist = CONFIG.archivists[key];
 
+        debug(`Archivist Action: ${archivist.action}`);
+
         if (archivist.action === 'launch') {
-          XYO.fromPort[archivist.ports.pipe] = XYO.fromPort[archivist.ports.pipe] || new XYO.Archivist(archivist.moniker, archivist.host, archivist.ports, archivist.config || {});
+          XYO.fromPort[archivist.ports.pipe] = XYO.fromPort[archivist.ports.pipe] || new XYO.Archivist(`acrhivist-${key}`, archivist.host, archivist.ports, archivist.config || {});
           XYO.fromPort[archivist.ports.pipe].findPeers(CONFIG.archivists);
         }
       }
@@ -59,8 +63,10 @@ const initialize = (complete) => {
       for (key in CONFIG.diviners) {
         let diviner = CONFIG.diviners[key];
 
+        debug(`Diviner Action: ${diviner.action}`);
+
         if (diviner.action === 'launch') {
-          XYO.fromPort[diviner.ports.pipe] = XYO.fromPort[diviner.ports.pipe] || new XYO.Diviner(diviner.moniker, diviner.host, diviner.ports, diviner.config || {});
+          XYO.fromPort[diviner.ports.pipe] = XYO.fromPort[diviner.ports.pipe] || new XYO.Diviner(`diviner-${key}`, diviner.host, diviner.ports, diviner.config || {});
           XYO.fromPort[diviner.ports.pipe].findPeers(CONFIG.diviners);
           XYO.fromPort[diviner.ports.pipe].findArchivists(CONFIG.archivists);
         }
@@ -73,7 +79,7 @@ const initialize = (complete) => {
 
   },
   updateObjects = () => {
-    // debug('>>>>>>>>TIMER<<<<<<<<<');
+    debug(`>>>>>>>>TIMER<<<<<<<<< [${Object.keys(XYO.fromMoniker).length}]`);
     let key;
 
     XYO.Base.updateCount++;

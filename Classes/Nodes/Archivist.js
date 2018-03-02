@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Archivist.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, February 15, 2018 2:26 PM
+ * @Last modified time: Thursday, March 1, 2018 6:18 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -146,6 +146,26 @@ class Archivist extends Node {
     entry.tailKeys.forEach((key) => {
       this.entriesByTailKey[key] = entry;
     });
+  }
+
+  update(config) {
+    debug("update");
+    super.update(config);
+  }
+
+  onEntry(socket, entry) {
+    debug('onEntry');
+    super.onEntry(socket, entry);
+  }
+
+  in(socket) {
+    debug('in');
+    super.in(socket);
+  }
+
+  out(target, buffer) {
+    debug('out');
+    super.out(target, buffer);
   }
 
   status() {

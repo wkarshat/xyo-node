@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: binon.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 3:14 PM
+ * @Last modified time: Thursday, March 1, 2018 8:00 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -247,20 +247,20 @@ class BinOn {
         case 'address':
           if (isNative) {
             // debug(format('a-address:{}', currentOffset));
-            obj = buffer.slice(currentOffset, currentOffset + 64);
-            if (obj.length !== 64) {
-              throw new Error(format('Failed to read 64 bytes for address: {}', obj.length));
+            obj = buffer.slice(currentOffset, currentOffset + 65);
+            if (obj.length !== 65) {
+              throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
             // debug(format('address-a: {}', obj.toString('hex')));
           } else {
             // debug(format('b-address:{}', currentOffset));
-            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 64).toString();
-            if (obj[activeMap.fields[i].name].length !== 64) {
-              throw new Error(format('Failed to read 64 bytes for address: {}', obj.length));
+            obj[activeMap.fields[i].name] = buffer.slice(currentOffset, currentOffset + 65).toString();
+            if (obj[activeMap.fields[i].name].length !== 65) {
+              throw new Error(format('Failed to read 65 bytes for address: {}', obj.length));
             }
             // debug(format('address-b: {}', obj[activeMap.fields[i].name].toString('hex')));
           }
-          currentOffset += 64;
+          currentOffset += 65;
           break;
         default: // these are custom types
           parts = activeMap.fields[i].type.split('*');
@@ -272,12 +272,20 @@ class BinOn {
             for (let j = 0; j < length; j++) {
               let subResult = this.bufferToObj(buffer, currentOffset, {}, parts[0], true);
 
+              if (!subResult) {
+                throw new Error("Bad Sub Result");
+              }
+
               obj[activeMap.fields[i].name].push(subResult.obj);
               currentOffset = subResult.offset;
             }
           } else {
             debug(format('single: [{}, {}, {}]', activeMap.fields[i].name, currentOffset, length));
             let subResult = this.bufferToObj(buffer, currentOffset);
+
+            if (!subResult) {
+              throw new Error("Bad Sub Result");
+            }
 
             obj[activeMap.fields[i].name] = subResult.obj;
             currentOffset = subResult.offset;
@@ -307,11 +315,20 @@ class BinOn {
   }
 
   objToBuffer(obj, map, crc, isNative) {
+    debug(`objToBuffer:${map}`);
+
+    if (!obj) {
+      debugger;
+    }
+
     // debug('objToBuffer');
     let bi, parts, buf, strBuf, buffers = [],
       activeMap = this.maps[obj.map];
 
     if (map) {
+      if (!(map.split)) {
+        debugger;
+      }
       parts = map.split('*');
       activeMap = this.maps[parts[0]];
     }
@@ -326,7 +343,8 @@ class BinOn {
           }]
         };
       } else {
-        throw new Error(format('Usage: Map Not Found [{}]', map));
+        debugger;
+        throw new Error(`Usage: Map Not Found [${map}]`);
       }
     }
 
@@ -370,7 +388,6 @@ class BinOn {
           } else {
             bi = bigInt(obj[activeMap.fields[i].name]);
           }
-
           if (bi.lesser('0')) {
             bi = 0;
           } else if (bi.greater(bigInt('0x1').shiftLeft(256))) {
@@ -461,13 +478,13 @@ class BinOn {
           break;
         case 'address':
           if (isNative) {
-            if (obj.length !== 64) {
-              throw new Error(format('Address must be 64 Bytes [{}]', obj.length));
+            if (obj.length !== 65) {
+              throw new Error(`Address must be 65 Bytes [${obj.length}:${obj.toString('hex')}]`);
             }
             buf = obj;
           } else {
-            if (obj[activeMap.fields[i].name].length !== 64) {
-              throw new Error(format('Address must be 64 Bytes [{}]', obj.length));
+            if (obj[activeMap.fields[i].name].length !== 65) {
+              throw new Error(`Address must be 65 Bytes [${obj.length}:${obj.toString('hex')}]`);
             }
             buf = obj[activeMap.fields[i].name];
           }
@@ -475,16 +492,27 @@ class BinOn {
           buffers.push(Buffer.from(buf));
           break;
         default: // these are custom types
-          debug(format('array: {} : {}', activeMap.fields[i].name, Buffer.concat(buffers).length));
           parts = activeMap.fields[i].type.split('*');
           if (parts.length > 1) {
+            let arrayLen = obj[activeMap.fields[i].name].length;
+
+            debug(format('array: {} : {}', activeMap.fields[i].name, arrayLen));
             buf = Buffer.alloc(2);
-            buf.writeUInt16BE(obj[activeMap.fields[i].name].length);
+            buf.writeUInt16BE(arrayLen);
             buffers.push(buf);
-            for (let j = 0; j < obj[activeMap.fields[i].name].length; j++) {
-              buffers.push(this.objToBuffer(obj[activeMap.fields[i].name][j], parts[0], false, true));
+            for (let j = 0; j < arrayLen; j++) {
+              let native = true, innerObj = obj[activeMap.fields[i].name][j];
+
+              if (!innerObj) {
+                throw new Error(`Missing Object: ${activeMap.fields[i].name}:${arrayLen}:${j}`);
+              }
+              if (this.maps[parts[0]]) {
+                native = false;
+              }
+              buffers.push(this.objToBuffer(innerObj, parts[0], false, native));
             }
           } else {
+            debug(format('single: {}', activeMap.fields[i].name));
             buffers.push(this.objToBuffer(obj[activeMap.fields[i].name], activeMap.fields[i].type));
           }
 

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: testdataclasses.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 1:38 PM
+ * @Last modified time: Thursday, March 1, 2018 8:04 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -30,18 +30,20 @@ TestDataClasses.All = () => {
     b0, b2,
     res0, res2;
 
+  entry.payload = (new XYODATA.Id()).toBuffer();
+
   entry.p2keys = [];
   for (let i = 0; i < node.keys.length; i++) {
-    entry.p2keys.push(node.keys[i].public);
+    entry.p2keys.push(node.keys[i].exportKey('components-public').n);
   }
 
   entry.p1Sign((payload) => {
     return node.sign(payload);
   }, () => {});
 
-  entry.p2Sign((payload) => {
+  /* entry.p2Sign((payload) => {
     return node.sign(payload);
-  }, () => {});
+  }, () => {}); */
 
   debug("* ===== O2B Testing 'simple' ===== *");
   b0 = XYODATA.BinOn.objToBuffer(simple, null, true);

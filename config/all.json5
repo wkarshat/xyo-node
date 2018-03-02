@@ -1,31 +1,233 @@
 {
   sentinels: {
     sdxyhq:{
-      action: "launch"
+      description: "San Diego XY HeadQuarters",
+      ports:{
+        api:21456,
+        pipe:25456
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.717244",
+          longitude: "-117.169299",
+          altitude: "17"
+        }
+      }
     },
-    sdzoo: {
-      action: "launch"
+    sdzoo:{
+      description: "San Diego Zoo",
+      ports:{
+        api:21457,
+        pipe:25457
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7164038",
+          longitude: "-117.1709121",
+          altitude: "14.53"
+        }
+      }
     },
-    sdairport: {
-      action: "launch"
+    sdairport:{
+      description: "San Diego Airport",
+      ports:{
+        api:21458,
+        pipe:25458
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7285668",
+          longitude: "-117.1970625",
+          altitude: "14.96"
+        }
+      }
     },
-    sdseaworld: {
-      action: "launch"
+    sdseaworld:{
+      description: "San Diego Sea World",
+      ports:{
+        api:21459,
+        pipe:25459
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7291013",
+          longitude: "-117.2697104",
+          altitude: "12.89"
+        }
+      }
     }
   },
   bridges: {
     sdxyhq:{
+      description: "San Diego XY HeadQuarters",
+      ports:{
+        api:22456,
+        pipe:26456
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.717244",
+          longitude: "-117.169299",
+          altitude: "17"
+        }
+      }
+    },
+    sdhoteldel:{
+      description: "San Diego Hotel Del Coronado",
+      ports:{
+        api:22457,
+        pipe:26457
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.6809275",
+          longitude: "-117.180642",
+          altitude: "17"
+        }
+      }
+    },
+    sdmthope:{
+      description: "San Diego Mt. Hope",
+      ports:{
+        api:22458,
+        pipe:26458
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.6988419",
+          longitude: "-117.1354522",
+          altitude: "15"
+        }
+      }
+    },
+    sdwestfieldmv:{
+      description: "San Diego Westfield Mall Mission Valley",
+      ports:{
+        api:22459,
+        pipe:26459
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        range: "10000000", //in mm (10km)
+        location: {
+          latitude: "32.7576968",
+          longitude: "-117.1490956",
+          altitude: "15"
+        }
+      }
+    }
+  },
+  archivists: {
+    xy1: {
+      ports:{
+        api:23456,
+        pipe:27456
+      },
+      host: "localhost",
       action: "launch"
     },
-    sdhoteldel: {
+    xy2: {
+      ports:{
+        api:23457,
+        pipe:27457
+      },
+      host: "localhost",
       action: "launch"
     },
-    sdmthope: {
+    xy3: {
+      ports:{
+        api:23458,
+        pipe:27458
+      },
+      host: "3.archivist.xyo.network",
       action: "launch"
     },
-    sdwestfieldmv: {
+    xy4: {
+      ports:{
+        api:23459,
+        pipe:27459
+      },
+      host: "4.archivist.xyo.network",
       action: "launch"
     }
   },
-  testdataclasses: false
+  diviners: {
+    xy1: {
+      ports:{
+        api:24456,
+        pipe:28456
+      },
+      host: "localhost",
+      action: "launch",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
+    },
+    xy2: {
+      ports:{
+        api:24457,
+        pipe:28457
+      },
+      host: "2.diviner.xyo.network",
+      action: "launch",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
+    },
+    xy3: {
+      ports:{
+        api:24458,
+        pipe:28458
+      },
+      host: "3.diviner.xyo.network",
+      action: "launch",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
+    },
+    xy4: {
+      ports:{
+        api:24459,
+        pipe:28459
+      },
+      host: "4.diviner.xyo.network",
+      action: "launch",
+      config: {
+        ethAddress: "http://localhost:8546",
+        xyoContract: "0x0d8cc4b8d15d4c3ef1d70af0071376fb26b5669b"
+      }
+    }
+  },
+  binon: {
+    folder: [
+      "./BinOn"
+    ]
+  },
+  testdataclasses: false,
+  clock: 5000
 }

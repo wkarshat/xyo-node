@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Sentinel.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 28, 2018 2:08 PM
+ * @Last modified time: Thursday, March 1, 2018 8:06 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -13,6 +13,7 @@
 
 const debug = require("debug")("Sentinel"),
   Node = require("./Node.js"),
+  bigInt = require("big-integer"),
   XYODATA = require("../../xyodata.js");
 
 class Sentinel extends Node {
@@ -70,14 +71,20 @@ class Sentinel extends Node {
     let peer = Math.floor(Math.random() * 10);
 
     if (peer < this.peers.length) {
-      let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
+      let id, buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
       entry.p2keys = [];
       for (let i = 0; i < this.keys.length; i++) {
-        entry.p2keys.push(this.keys[i].public);
+        entry.p2keys.push(this.keys[i].exportKey('components-public').n);
       }
 
-      entry.payloads.push(new XYODATA.Id(XYODATA.BinOn));
+      id = new XYODATA.Id(XYODATA.BinOn);
+
+      if (!id) {
+        throw new Error("Missing Id");
+      }
+
+      entry.payload = Buffer.alloc(1);
 
       buffer = entry.toBuffer();
       this.out(this.peers[peer], buffer);
@@ -92,20 +99,42 @@ class Sentinel extends Node {
       let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
       entry.p2keys = [];
-      entry.payloads = [];
+
       for (let i = 0; i < maxEntries && i < this.entries.length; i++) {
-        entry.payloads.push(this.entries[i].toBuffer());
+        let buf = this.entries[i].toBuffer();
+
+        if (!buf) {
+          throw new Error("Missing Payload");
+        }
+
+        entry.payload = buf;
       }
       for (let i = 0; i < this.keys.length; i++) {
-        entry.p2keys.push(this.keys[i].public);
+        entry.p2keys.push(this.keys[i].exportKey('components-public').n);
       }
       buffer = entry.toBuffer();
       this.out(this.bridges[bridge], buffer);
     }
   }
 
+  onEntry(socket, entry) {
+    debug('onEntry');
+    super.onEntry(socket, entry);
+  }
+
+  in(socket) {
+    debug('in');
+    super.in(socket);
+  }
+
+  out(target, buffer) {
+    debug('out');
+    super.out(target, buffer);
+  }
+
   update(config) {
     super.update(config);
+    debug("update");
     if (this.bridges.length === 0) {
       this.findSentinels(config.sentinels);
       this.findBridges(config.bridges);

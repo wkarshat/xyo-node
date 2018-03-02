@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: gulpfile.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 2:44 PM
+ * @Last modified time: Thursday, March 1, 2018 6:26 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -70,8 +70,6 @@ gulp.task('inspect', () => {
 
   if (args.run) {
     process.env.NODE_ENV = args.run;
-  } else {
-    process.env.NODE_ENV = 'default';
   }
   gulp.start('runInspect');
 });
@@ -86,7 +84,7 @@ gulp.task('nodemon-inspect', (cb) => {
 
   env({
     vars: {
-      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-testsataclasses*,-BinOn*'
+      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-xyo-solidity*'
     }
   });
 
@@ -110,7 +108,7 @@ gulp.task('nodemon', (cb) => {
 
   env({
     vars: {
-      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-testsataclasses*,-BinOn*'
+      DEBUG: '*,-socket.io*,-engine*,-express*,-snapdragon*,-xyo-solidity*'
     }
   });
 

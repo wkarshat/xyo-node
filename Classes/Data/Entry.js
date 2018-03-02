@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Entry.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 20, 2018 9:22 AM
+ * @Last modified time: Thursday, March 1, 2018 8:06 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -22,7 +22,7 @@ class Entry extends Simple {
     super(binOn);
     this.type = 0x1005;
     this.map = "entry";
-    this.payloads = [];
+    this.payload = Buffer.alloc(1);
     this.nonce = bigInt.randBetween(bigInt("0x0"), bigInt("0x1").shiftLeft(255));
     this.difficulty = 0;
     this.p1keys = [];
@@ -60,15 +60,15 @@ class Entry extends Simple {
     let result, buffer = this.toBuffer();
 
     if (this.p1keys.length === 0) {
-      throw new Error("Missing p1 Keys");
+      throw new Error("Missing p1 Keys - They are required for a p2Sign");
     }
 
     if (this.p1signatures.length === 0) {
-      throw new Error("Missing p1 Signatures");
+      throw new Error("Missing p1 Signatures - They are required for a p2Sign");
     }
 
     if (this.p2keys.length === 0) {
-      throw new Error("Missing p2 Keys");
+      throw new Error("Missing p2 Keys - They are required for a p2Sign");
     }
 
     result = signer(buffer);

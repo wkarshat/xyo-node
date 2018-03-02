@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Wednesday, February 28, 2018 7:15 PM
+ * @Last modified time: Thursday, March 1, 2018 6:15 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -57,6 +57,21 @@ class Diviner extends Node {
     });
   }
 
+  onEntry(socket, entry) {
+    debug('onEntry');
+    super.onEntry(socket, entry);
+  }
+
+  in(socket) {
+    debug('in');
+    super.in(socket);
+  }
+
+  out(target, buffer) {
+    debug('out');
+    super.out(target, buffer);
+  }
+
   sendSolidityQuery(xyoValue, xyoAddress, accuracy, certainty, delay, epoch) {
     debug('sendSolidityQuery');
     let compiled = new XYOSolidity().contracts.load('xy.sol', 'XY'),
@@ -64,7 +79,7 @@ class Diviner extends Node {
       contract = this.web3.eth.contract(abi),
       addressContract = contract.at(this.xyoContract);
 
-    debug('addressContract: ', addressContract);
+    // debug('addressContract: ', addressContract);
 
     debug('calling...');
 

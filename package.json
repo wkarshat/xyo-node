@@ -20,7 +20,15 @@
     "url": "https://github.com/XYOracleNetwork/xyo-node/issues"
   },
   "homepage": "https://github.com/XYOracleNetwork/xyo-node#readme",
-  "keywords": ["xyo", "xy", "oracle", "bitcoin", "eth", "ethereum", "location"],
+  "keywords": [
+    "xyo",
+    "xy",
+    "oracle",
+    "bitcoin",
+    "eth",
+    "ethereum",
+    "location"
+  ],
   "author": "Arie Trouw",
   "license": "GNU",
   "dependencies": {
@@ -36,10 +44,10 @@
     "gulp-nodemon": "^2.2.1",
     "json5": "^0.5.1",
     "node-debugger": "^1.0.0",
+    "node-rsa": "^0.4.2",
     "parity": "^0.2.7",
     "solc": "^0.4.20",
     "string-format": "^0.5.0",
-    "ursa": "^0.9.4",
     "web3": "^0.14.1",
     "websocket": "^1.0.25",
     "xyo-solidity": "^0.1.2"

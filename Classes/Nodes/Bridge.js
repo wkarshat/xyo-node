@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Bridge.js
  * @Last modified by:   arietrouw
- * @Last modified time: Tuesday, February 27, 2018 3:22 PM
+ * @Last modified time: Thursday, March 1, 2018 8:03 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -98,10 +98,15 @@ class Bridge extends Node {
       let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
       for (let i = 0; i < maxEntries && i < this.entries.length; i++) {
-        entry.payloads.push(this.entries[i].toBuffer());
+        let buf = this.entries[i].toBuffer();
+
+        if (!buf) {
+          throw new Error("Null Buffer");
+        }
+        entry.payload = buf;
       }
       for (let i = 0; i < this.keys.length; i++) {
-        entry.p2keys.push(this.keys[i].public);
+        entry.p2keys.push(this.keys[i].exportKey('components-public').n);
       }
       buffer = entry.toBuffer();
       this.out(this.archivists[archivist], buffer);
@@ -116,11 +121,29 @@ class Bridge extends Node {
       let buffer, entry = new XYODATA.Entry(XYODATA.BinOn);
 
       for (let i = 0; i < this.keys.length; i++) {
-        entry.p2keys.push(this.keys[i].public);
+        entry.p2keys.push(this.keys[i].exportKey('components-public').n);
       }
+
       buffer = entry.toBuffer();
       this.out(this.sentinels[sentinel], buffer);
+
+      debug(`initiateSentinelPull-Done:${JSON.stringify(entry)}`);
     }
+  }
+
+  onEntry(socket, entry) {
+    debug('onEntry');
+    super.onEntry(socket, entry);
+  }
+
+  in(socket) {
+    debug('in');
+    super.in(socket);
+  }
+
+  out(target, buffer) {
+    debug('out');
+    super.out(target, buffer);
   }
 
   update(config) {
