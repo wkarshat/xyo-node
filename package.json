@@ -50,10 +50,10 @@
     "string-format": "^0.5.0",
     "web3": "^0.14.1",
     "websocket": "^1.0.25",
-    "xyo-solidity": "^0.1.2"
+    "xyo-solidity": "^0.1.5"
   },
   "devDependencies": {
-    "eslint": "^4.18.1",
+    "eslint": "^4.18.2",
     "gulp-debug": "^3.2.0"
   }
 }

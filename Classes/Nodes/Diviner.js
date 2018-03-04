@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Diviner.js
  * @Last modified by:   arietrouw
- * @Last modified time: Thursday, March 1, 2018 6:15 PM
+ * @Last modified time: Saturday, March 3, 2018 6:36 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -14,8 +14,10 @@
 const debug = require('debug')('Diviner'),
   Node = require('./Node.js'),
   HTTP = require('http'),
+  Query = require('../Data/Query.js'),
   Web3 = require('web3'),
   format = require('string-format'),
+  bigInt = require('big-integer'),
   XYOSolidity = require('xyo-solidity');
 
 class Diviner extends Node {
@@ -29,15 +31,15 @@ class Diviner extends Node {
     this.completedQueries = [];
     this.web3 = null;
     this.blockHeadersSubscription = null;
+    this.xyUncalibratedQueryAddress = null;
     if (config && config.ethAddress) {
       this.connectToEthereum(config.ethAddress);
     }
-    if (config && config.xyoContract) {
-      this.xyoContract = config.xyoContract;
+    if (config && config.xyUncalibratedQueryAddress) {
+      this.xyUncalibratedQueryAddress = config.xyUncalibratedQueryAddress;
     } else {
-      this.xyoContract = this.createXYContract();
+      this.createXYUncalibratedQueryContract();
     }
-    this.sendSolidityQuery(100, '0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef', 10, 10, 10, 0);
   }
 
   connectToEthereum(address) {
@@ -72,30 +74,34 @@ class Diviner extends Node {
     super.out(target, buffer);
   }
 
-  sendSolidityQuery(xyoValue, xyoAddress, accuracy, certainty, delay, epoch) {
-    debug('sendSolidityQuery');
-    let compiled = new XYOSolidity().contracts.load('xy.sol', 'XY'),
-      abi = JSON.parse(compiled.interface),
-      contract = this.web3.eth.contract(abi),
-      addressContract = contract.at(this.xyoContract);
+  getUncalibratedContract() {
+    let compiled = new XYOSolidity().contracts.load('XYUncalibratedQuery.sol', 'XYUncalibratedQuery'),
+      abi = JSON.parse(compiled.interface);
 
-    // debug('addressContract: ', addressContract);
+    return { compiled: compiled, contract: this.web3.eth.contract(abi) };
+  }
 
-    debug('calling...');
+  getPendingUncalibratedQueries(callback) {
+    debug('getPendingUncalibratedQueries');
+    let xyContract = this.getUncalibratedContract(),
+      xyInstance = xyContract.contract.at(this.uncalibratedContractAddress);
 
-    addressContract.publishQuery(xyoValue, xyoAddress, accuracy, certainty, delay, epoch, {
-      from: this.web3.eth.coinbase,
-      gas: 90000 * 10
+    xyInstance.pendingQueries(this.web3.eth.defaultAccount, (error, result) => {
+      if (error) {
+        debug("Error: ", error);
+        callback(error, null);
+      } else {
+        callback(null, Query.fromArray(result));
+      }
     });
   }
 
-  createXYContract() {
-    let compiled = new XYOSolidity().contracts.load('xy.sol', 'XY'),
-      abi = JSON.parse(compiled.interface),
-      contract = this.web3.eth.contract(abi);
+  createXYUncalibratedQueryContract() {
+    debug('createXYUncalibratedQueryContract');
+    let contract = this.getUncalibratedContract();
 
-    contract.new({
-      data: '0x' + compiled.bytecode,
+    contract.contract.new({
+      data: '0x' + contract.compiled.bytecode,
       from: this.web3.eth.coinbase,
       gas: 90000 * 10
     }, (err, res) => {
@@ -110,6 +116,7 @@ class Diviner extends Node {
       // If we have an address property, the contract was deployed
       if (res.address) {
         debug('Contract address: ', res.address);
+        this.xyUncalibratedQueryAddress = res.address;
       }
     });
   }
@@ -275,14 +282,16 @@ class Diviner extends Node {
   }
 
   update(config) {
-    debug('update');
+    debug('update: ', Node.updateCount);
     super.update(config);
     if (this.archivists.length === 0) {
       this.findArchivists(config.archivists);
       this.findPeers(config.diviners);
     }
-    if (this.updateCount) {
-      this.sendSolidityQuery();
+    if (Node.updateCount) {
+      this.getPendingUncalibratedQueries(() => {
+
+      });
     }
   }
 

@@ -4,7 +4,7 @@
  * @Email:  developer@xyfindables.com
  * @Filename: Node.js
  * @Last modified by:   arietrouw
- * @Last modified time: Friday, March 2, 2018 12:53 AM
+ * @Last modified time: Saturday, March 3, 2018 4:53 PM
  * @License: All Rights Reserved
  * @Copyright: Copyright XY | The Findables Company
  */
@@ -108,7 +108,7 @@ class Node extends Base {
     let inData = null;
 
     socket.on('data', (buffer) => {
-      debug('in:data: {}', buffer.length);
+      debug('in:data: ', buffer.length);
       let result;
 
       if (inData) {
@@ -118,7 +118,7 @@ class Node extends Base {
       }
 
       if (inData.length >= 4) {
-        debug('in:data: checking: ', buffer.length);
+        debug('in:data: checking: ', buffer);
 
         result = XYODATA.Simple.fromBuffer(inData);
         if (result.obj) {
